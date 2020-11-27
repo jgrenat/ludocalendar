@@ -57,20 +57,5 @@ metadataToRssItem :
     -> Maybe Rss.Item
 metadataToRssItem page =
     case page.frontmatter of
-        Article article ->
-            if article.draft then
-                Nothing
-
-            else
-                Just
-                    { title = article.title
-                    , description = article.description
-                    , url = PagePath.toString page.path
-                    , categories = []
-                    , author = article.author.name
-                    , pubDate = Rss.Date article.published
-                    , content = Nothing
-                    }
-
         _ ->
             Nothing
