@@ -76,11 +76,17 @@ styles =
     , Css.class "day"
         [ width (px 180)
         , height (px 180)
-        , Media.withMedia [ Media.all [ Media.maxWidth (px 500) ] ]
+        , Media.withMedia [ Media.all [ Media.maxWidth (px 400) ] ]
             [ width (px 100)
             , height (px 100)
             , fontSize (rem 2)
             , margin (px 5)
+            ]
+        , Media.withMedia [ Media.all [ Media.maxWidth (px 700) ] ]
+            [ width (px 130)
+            , height (px 130)
+            , fontSize (rem 2)
+            , margin (px 10)
             ]
         , margin (px 10)
         , backgroundColor (rgb 200 56 17)
