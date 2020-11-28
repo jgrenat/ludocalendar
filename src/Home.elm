@@ -1,13 +1,15 @@
 module Home exposing (view)
 
-import Css exposing (absolute, alignItems, backgroundColor, bottom, center, color, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, margin, none, pct, position, px, relative, rem, rgb, right, textDecoration, top, width, wrap)
+import Css exposing (absolute, backgroundColor, block, calc, center, color, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minHeight, minWidth, minus, none, paddingTop, pct, position, px, relative, rem, rgb, right, textDecoration, top, transforms, translateX, translateY, width, wrap)
 import Css.Global as Css exposing (Snippet)
+import Css.Media as Media
 import Day1
+import Day2
 import Html.Styled exposing (Html, a, div, text)
 import Html.Styled.Attributes exposing (class, href)
 import Model exposing (Model)
 import Pages exposing (pages)
-import Pages.PagePath as PagePath
+import Pages.PagePath as PagePath exposing (PagePath)
 import Time exposing (Posix, Zone)
 import Utils.Html exposing (attributeIf)
 
@@ -16,29 +18,29 @@ view : Model -> Html msg
 view model =
     let
         days =
-            [ ( 1, Day1.isDone model.day1 )
-            , ( 2, False )
-            , ( 3, False )
-            , ( 4, False )
-            , ( 5, False )
-            , ( 6, False )
-            , ( 7, False )
-            , ( 8, False )
-            , ( 9, False )
-            , ( 10, False )
-            , ( 11, False )
-            , ( 12, False )
-            , ( 14, False )
-            , ( 15, False )
-            , ( 16, False )
-            , ( 17, False )
-            , ( 18, False )
-            , ( 19, False )
-            , ( 20, False )
-            , ( 21, False )
-            , ( 22, False )
-            , ( 23, False )
-            , ( 24, False )
+            [ ( 1, Day1.isDone model.day1, pages.day1 )
+            , ( 2, Day2.isDone model.day2, pages.day2 )
+            , ( 3, False, pages.day2 )
+            , ( 4, False, pages.day2 )
+            , ( 5, False, pages.day2 )
+            , ( 6, False, pages.day2 )
+            , ( 7, False, pages.day2 )
+            , ( 8, False, pages.day2 )
+            , ( 9, False, pages.day2 )
+            , ( 10, False, pages.day2 )
+            , ( 11, False, pages.day2 )
+            , ( 12, False, pages.day2 )
+            , ( 14, False, pages.day2 )
+            , ( 15, False, pages.day2 )
+            , ( 16, False, pages.day2 )
+            , ( 17, False, pages.day2 )
+            , ( 18, False, pages.day2 )
+            , ( 19, False, pages.day2 )
+            , ( 20, False, pages.day2 )
+            , ( 21, False, pages.day2 )
+            , ( 22, False, pages.day2 )
+            , ( 23, False, pages.day2 )
+            , ( 24, False, pages.day2 )
             ]
 
         maxDay =
@@ -51,16 +53,16 @@ view model =
     div [ class "days" ]
         (Css.global styles
             :: (days
-                    |> List.filter (\( day, _ ) -> day <= maxDay)
+                    |> List.filter (\( day, _, _ ) -> day <= maxDay)
                     |> List.map viewDay
                )
         )
 
 
-viewDay : ( Int, Bool ) -> Html msg
-viewDay ( day, isDone ) =
-    a [ class "day", attributeIf isDone (class "day--done"), href (PagePath.toString pages.day1) ]
-        [ text (String.fromInt day)
+viewDay : ( Int, Bool, PagePath pathKey ) -> Html msg
+viewDay ( day, isDone, path ) =
+    a [ class "day", attributeIf isDone (class "day--done"), href (PagePath.toString path) ]
+        [ div [ class "text" ] [ text (String.fromInt day) ]
         ]
 
 
@@ -69,19 +71,31 @@ styles =
     [ Css.class "days"
         [ displayFlex
         , flexWrap wrap
+        , justifyContent center
         ]
     , Css.class "day"
         [ width (px 180)
         , height (px 180)
+        , Media.withMedia [ Media.all [ Media.maxWidth (px 500) ] ]
+            [ width (px 100)
+            , height (px 100)
+            , fontSize (rem 2)
+            , margin (px 5)
+            ]
         , margin (px 10)
         , backgroundColor (rgb 200 56 17)
         , color (rgb 250 250 250)
         , fontSize (rem 3)
-        , displayFlex
-        , alignItems center
-        , justifyContent center
         , textDecoration none
         , position relative
+        , Css.children
+            [ Css.class "text"
+                [ position absolute
+                , top (pct 50)
+                , left (pct 50)
+                , transforms [ translateX (pct -50), translateY (pct -50) ]
+                ]
+            ]
         , Css.hover
             [ backgroundColor (rgb 17 100 56)
             ]

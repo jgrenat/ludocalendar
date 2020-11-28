@@ -155,7 +155,7 @@ view zone currentDate state =
                         ]
 
                 Done score ->
-                    typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] ("🎁🎄 Défi terminé ! Votre score : " ++ String.fromInt score)
+                    typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] ("Défi terminé ! Votre score : " ++ String.fromInt score)
             ]
 
 

@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Color
 import Day1
+import Day2
 import Feed
 import Head
 import Head.Seo as Seo
@@ -110,7 +111,7 @@ markdownDocument =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Time.utc (millisToPosix 0) Day1.init
+    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -123,6 +124,7 @@ type Msg
     | ZoneRetrieved Zone
     | StateLoaded Decode.Value
     | Day1Msg Day1.Msg
+    | Day2Msg Day2.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -137,17 +139,13 @@ update msg model =
         StateLoaded value ->
             let
                 loadedModelResult =
-                    Decode.decodeValue stateDecoder value
+                    Decode.decodeValue (stateDecoder model.zone model.currentDate) value
             in
             case loadedModelResult of
                 Ok loadedModel ->
-                    ( loadedModel model.zone model.currentDate, Cmd.none )
+                    ( loadedModel, Cmd.none )
 
-                Err b ->
-                    let
-                        a =
-                            Debug.log "err" b
-                    in
+                Err _ ->
                     ( model, Cmd.none )
 
         Day1Msg day1Msg ->
@@ -156,6 +154,13 @@ update msg model =
                     Day1.update model.day1 day1Msg
             in
             ( { model | day1 = newModel }, saveDay 1 Day1.saveState newModel )
+
+        Day2Msg day2Msg ->
+            let
+                newModel =
+                    Day2.update model.day2 day2Msg
+            in
+            ( { model | day2 = newModel }, saveDay 2 Day2.saveState newModel )
 
 
 subscriptions _ _ _ =
@@ -195,6 +200,14 @@ pageView model siteMetadata page viewForPage =
             , body =
                 [ Day1.view model.zone model.currentDate model.day1
                     |> Html.Styled.map Day1Msg
+                ]
+            }
+
+        Metadata.Day2 ->
+            { title = "LudoCalendar – Deuxième jour"
+            , body =
+                [ Day2.view model.zone model.currentDate model.day2
+                    |> Html.Styled.map Day2Msg
                 ]
             }
 
@@ -251,6 +264,22 @@ head metadata =
                         , title = "Premier jour"
                         }
                         |> Seo.website
+
+                Metadata.Day2 ->
+                    Seo.summaryLarge
+                        { canonicalUrlOverride = Nothing
+                        , siteName = "LudoCalendar"
+                        , image =
+                            { url = images.iconPng
+                            , alt = "LudoCalendar logo"
+                            , dimensions = Nothing
+                            , mimeType = Nothing
+                            }
+                        , description = siteTagline
+                        , locale = Nothing
+                        , title = "Deuxième jour"
+                        }
+                        |> Seo.website
            )
 
 
@@ -269,7 +298,8 @@ saveDay day encoder model =
     saveToLocalStorage (Ports.DayState day (encoder model))
 
 
-stateDecoder : Decoder (Zone -> Posix -> Model)
-stateDecoder =
-    Decode.map (\day1Model time zone -> Model time zone day1Model)
+stateDecoder : Zone -> Posix -> Decoder Model
+stateDecoder zone time =
+    Decode.map2 (Model zone time)
         (Decode.oneOf [ Decode.field "day1" Day1.stateDecoder, Decode.succeed Day1.init ])
+        (Decode.oneOf [ Decode.field "day2" Day2.stateDecoder, Decode.succeed Day2.init ])

@@ -2,6 +2,7 @@ module DesignSystem.Global exposing (styles)
 
 import Css exposing (auto, backgroundAttachment, backgroundColor, backgroundImage, backgroundPosition, backgroundSize, block, borderRadius, boxShadow, boxShadow5, center, contain, cover, display, fixed, fontStyle, fontWeight, height, int, italic, margin, maxWidth, minHeight, none, pct, px, rgba, textAlign, textDecoration, underline, url, width)
 import Css.Global as Css exposing (Snippet, em)
+import Css.Media as Media
 import DesignSystem.Button exposing (ButtonSize(..))
 import DesignSystem.Colors as Colors
 import DesignSystem.Spacing exposing (SpacingSize(..), marginBottom, marginTop, padding2)
@@ -43,6 +44,9 @@ styles =
         , padding2 M M
         , minHeight (pct 100)
         , boxShadow5 (px 0) (px 1) (px 20) (px -4) Colors.containerShadow
+        , Media.withMedia [ Media.all [ Media.maxWidth (px 500) ] ]
+            [ padding2 XS XS
+            ]
         ]
     , Css.class "catchPhrase"
         [ textAlign center ]

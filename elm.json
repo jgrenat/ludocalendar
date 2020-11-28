@@ -24,6 +24,7 @@
             "elm-community/maybe-extra": "5.2.0",
             "justinmimbs/date": "3.2.1",
             "krisajenkins/remotedata": "6.0.1",
+            "kuon/elm-string-normalize": "1.0.2",
             "rtfeldman/elm-css": "16.1.0"
         },
         "indirect": {
