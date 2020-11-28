@@ -25,16 +25,15 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Build front
       run: |
-        cd front
         npm install
         npm run build
-        cp public/index.html public/404.html
+        cp dist/index.html dist/404.html
 
     - name: Deploy to GitHub Pages
       uses: crazy-max/ghaction-github-pages@v2.1.1
       with:
         # Build directory to deploy
-        build_dir: ./front/public
+        build_dir: ./dist
         # Write the given domain name to the CNAME file
         fqdn: ludocalendar.com
         jekyll: false
