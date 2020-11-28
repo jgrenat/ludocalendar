@@ -11,13 +11,12 @@ import Html.Styled.Attributes exposing (class)
 type TypographyType
     = Paragraph
     | DateTime
-    | QuizBestResult
+    | Instructions
     | Title1
     | Title2
     | MainTitleFirstPart
     | MainTitleSecondPart
     | HeroText
-    | FooterText
 
 
 type FontSize
@@ -99,10 +98,7 @@ getClassName typographyType =
         HeroText ->
             "heroText"
 
-        FooterText ->
-            "footerText"
-
-        QuizBestResult ->
+        Instructions ->
             "quizBestResultText"
 
 
@@ -141,14 +137,9 @@ getStylesFor typographyType =
             , fontWeight (int 500)
             ]
 
-        FooterText ->
+        Instructions ->
             [ fontStyle italic
             , fontSize M
-            ]
-
-        QuizBestResult ->
-            [ fontStyle italic
-            , fontSize S
             ]
 
 
@@ -163,5 +154,5 @@ mainTitleStyles =
 
 styles : List Css.Snippet
 styles =
-    [ Paragraph, Title1, Title2, MainTitleFirstPart, MainTitleSecondPart, DateTime, HeroText, FooterText, QuizBestResult ]
+    [ Paragraph, Title1, Title2, MainTitleFirstPart, MainTitleSecondPart, DateTime, HeroText, Instructions ]
         |> List.map (\typographyType -> Css.class (getClassName typographyType) (getStylesFor typographyType))

@@ -1,8 +1,8 @@
-module Utils.Html exposing (AriaRole(..), ariaControls, ariaExpanded, ariaHasPopup, ariaLabelledBy, nonBreakableSpace, nothing, role, screenReaderOnly, viewIf, viewIfLazy, viewMaybe)
+module Utils.Html exposing (AriaRole(..), ariaControls, ariaExpanded, ariaHasPopup, ariaLabelledBy, attributeIf, nonBreakableSpace, nothing, role, screenReaderOnly, viewIf, viewIfLazy, viewMaybe)
 
 import Css exposing (absolute, height, hidden, left, overflow, position, px, width)
 import Html.Styled as Html exposing (Attribute, Html, span, text)
-import Html.Styled.Attributes exposing (attribute, css)
+import Html.Styled.Attributes exposing (attribute, classList, css)
 
 
 nothing : Html msg
@@ -33,6 +33,15 @@ viewMaybe fn maybeThing =
     maybeThing
         |> Maybe.map fn
         |> Maybe.withDefault nothing
+
+
+attributeIf : Bool -> Attribute msg -> Attribute msg
+attributeIf condition attr =
+    if condition then
+        attr
+
+    else
+        classList []
 
 
 nonBreakableSpace : String

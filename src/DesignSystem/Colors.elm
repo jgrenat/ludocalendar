@@ -29,12 +29,12 @@ facebookBlue =
 
 primary : Color
 primary =
-    hex "2C99B0"
+    hex "004620"
 
 
 secondary : Color
 secondary =
-    hex "423783"
+    hex "f63333"
 
 
 containerBackground : Color

@@ -1,17 +1,20 @@
 module Main exposing (main)
 
 import Color
+import Day1
 import Feed
 import Head
 import Head.Seo as Seo
 import Home
 import Html
 import Html.Styled exposing (Html, fromUnstyled)
-import Json.Decode
+import Json.Decode as Decode exposing (Decoder)
+import Json.Encode as Encode
 import Layout
 import Markdown.Parser
 import Markdown.Renderer
 import Metadata exposing (Metadata)
+import Model exposing (Model)
 import MySitemap
 import Pages exposing (images, pages)
 import Pages.Manifest as Manifest
@@ -19,6 +22,7 @@ import Pages.Manifest.Category
 import Pages.PagePath exposing (PagePath)
 import Pages.Platform
 import Pages.StaticHttp as StaticHttp
+import Ports exposing (saveToLocalStorage, stateFromLocalStorage)
 import Task
 import Time exposing (Posix, Zone, millisToPosix)
 
@@ -88,7 +92,7 @@ generateFiles siteMetadata =
         ]
 
 
-markdownDocument : { extension : String, metadata : Json.Decode.Decoder Metadata, body : String -> Result error Rendered }
+markdownDocument : { extension : String, metadata : Decode.Decoder Metadata, body : String -> Result error Rendered }
 markdownDocument =
     { extension = "md"
     , metadata = Metadata.decoder
@@ -104,13 +108,9 @@ markdownDocument =
     }
 
 
-type alias Model =
-    { zone : Zone, currentDate : Posix }
-
-
 init : ( Model, Cmd Msg )
 init =
-    ( Model Time.utc (millisToPosix 0)
+    ( Model Time.utc (millisToPosix 0) Day1.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -121,6 +121,8 @@ init =
 type Msg
     = Tick Posix
     | ZoneRetrieved Zone
+    | StateLoaded Decode.Value
+    | Day1Msg Day1.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -132,9 +134,32 @@ update msg model =
         ZoneRetrieved zone ->
             ( { model | zone = zone }, Cmd.none )
 
+        StateLoaded value ->
+            let
+                loadedModelResult =
+                    Decode.decodeValue stateDecoder value
+            in
+            case loadedModelResult of
+                Ok loadedModel ->
+                    ( loadedModel model.zone model.currentDate, Cmd.none )
+
+                Err b ->
+                    let
+                        a =
+                            Debug.log "err" b
+                    in
+                    ( model, Cmd.none )
+
+        Day1Msg day1Msg ->
+            let
+                newModel =
+                    Day1.update model.day1 day1Msg
+            in
+            ( { model | day1 = newModel }, saveDay 1 Day1.saveState newModel )
+
 
 subscriptions _ _ _ =
-    Time.every (60 * 1000) Tick
+    Sub.batch [ Time.every (60 * 1000) Tick, stateFromLocalStorage StateLoaded ]
 
 
 view :
@@ -161,7 +186,15 @@ pageView model siteMetadata page viewForPage =
         Metadata.Home ->
             { title = "LudoCalendar"
             , body =
-                [ Home.view model.zone model.currentDate
+                [ Home.view model
+                ]
+            }
+
+        Metadata.Day1 ->
+            { title = "LudoCalendar – Premier jour"
+            , body =
+                [ Day1.view model.zone model.currentDate model.day1
+                    |> Html.Styled.map Day1Msg
                 ]
             }
 
@@ -199,7 +232,23 @@ head metadata =
                             }
                         , description = siteTagline
                         , locale = Nothing
-                        , title = "elm-pages blog"
+                        , title = "Accueil"
+                        }
+                        |> Seo.website
+
+                Metadata.Day1 ->
+                    Seo.summaryLarge
+                        { canonicalUrlOverride = Nothing
+                        , siteName = "LudoCalendar"
+                        , image =
+                            { url = images.iconPng
+                            , alt = "LudoCalendar logo"
+                            , dimensions = Nothing
+                            , mimeType = Nothing
+                            }
+                        , description = siteTagline
+                        , locale = Nothing
+                        , title = "Premier jour"
                         }
                         |> Seo.website
            )
@@ -213,3 +262,14 @@ canonicalSiteUrl =
 siteTagline : String
 siteTagline =
     "Le calendrier de l'avent de vos jeux de société !"
+
+
+saveDay : Int -> (model -> Encode.Value) -> model -> Cmd msg
+saveDay day encoder model =
+    saveToLocalStorage (Ports.DayState day (encoder model))
+
+
+stateDecoder : Decoder (Zone -> Posix -> Model)
+stateDecoder =
+    Decode.map (\day1Model time zone -> Model time zone day1Model)
+        (Decode.oneOf [ Decode.field "day1" Day1.stateDecoder, Decode.succeed Day1.init ])
