@@ -37,3 +37,14 @@ pagesInit({
     day24: JSON.parse(localStorage.getItem("day24")),
   });
 });
+
+
+// Add Plausible
+const scriptTag = document.createElement('script');
+scriptTag.type = 'text/javascript';
+scriptTag.async = true;
+scriptTag.src = 'https://plausible.io/js/plausible.js';
+scriptTag.defer = true;
+scriptTag['data-domain'] = 'ludocalendar.com';
+window.document.body.appendChild(scriptTag);
+
