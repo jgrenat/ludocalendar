@@ -3,6 +3,7 @@ module Main exposing (main)
 import Color
 import Day1
 import Day2
+import Day3
 import Feed
 import Head
 import Head.Seo as Seo
@@ -40,7 +41,7 @@ manifest =
     , themeColor = Just Color.white
     , startUrl = pages.index
     , shortName = Just "elm-pages-starter"
-    , sourceIcon = images.iconPng
+    , sourceIcon = images.androidChrome512x512
     , icons = []
     }
 
@@ -111,7 +112,7 @@ markdownDocument =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init
+    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init Day3.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -125,6 +126,7 @@ type Msg
     | StateLoaded Decode.Value
     | Day1Msg Day1.Msg
     | Day2Msg Day2.Msg
+    | Day3Msg Day3.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -161,6 +163,13 @@ update msg model =
                     Day2.update model.day2 day2Msg
             in
             ( { model | day2 = newModel }, saveDay 2 Day2.saveState newModel )
+
+        Day3Msg day3Msg ->
+            let
+                newModel =
+                    Day3.update model.day3 day3Msg
+            in
+            ( { model | day3 = newModel }, saveDay 3 Day3.saveState newModel )
 
 
 subscriptions _ _ _ =
@@ -211,6 +220,14 @@ pageView model siteMetadata page viewForPage =
                 ]
             }
 
+        Metadata.Day3 ->
+            { title = "LudoCalendar – Troisième jour"
+            , body =
+                [ Day3.view model.zone model.currentDate model.day3
+                    |> Html.Styled.map Day3Msg
+                ]
+            }
+
 
 commonHeadTags : List (Head.Tag Pages.PathKey)
 commonHeadTags =
@@ -238,8 +255,8 @@ head metadata =
                         { canonicalUrlOverride = Nothing
                         , siteName = "LudoCalendar"
                         , image =
-                            { url = images.iconPng
-                            , alt = "LudoCalendar logo"
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
                             , dimensions = Nothing
                             , mimeType = Nothing
                             }
@@ -254,8 +271,8 @@ head metadata =
                         { canonicalUrlOverride = Nothing
                         , siteName = "LudoCalendar"
                         , image =
-                            { url = images.iconPng
-                            , alt = "LudoCalendar logo"
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
                             , dimensions = Nothing
                             , mimeType = Nothing
                             }
@@ -270,14 +287,30 @@ head metadata =
                         { canonicalUrlOverride = Nothing
                         , siteName = "LudoCalendar"
                         , image =
-                            { url = images.iconPng
-                            , alt = "LudoCalendar logo"
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
                             , dimensions = Nothing
                             , mimeType = Nothing
                             }
                         , description = siteTagline
                         , locale = Nothing
                         , title = "Deuxième jour"
+                        }
+                        |> Seo.website
+
+                Metadata.Day3 ->
+                    Seo.summaryLarge
+                        { canonicalUrlOverride = Nothing
+                        , siteName = "LudoCalendar"
+                        , image =
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
+                            , dimensions = Nothing
+                            , mimeType = Nothing
+                            }
+                        , description = siteTagline
+                        , locale = Nothing
+                        , title = "Troisième jour"
                         }
                         |> Seo.website
            )
@@ -300,6 +333,7 @@ saveDay day encoder model =
 
 stateDecoder : Zone -> Posix -> Decoder Model
 stateDecoder zone time =
-    Decode.map2 (Model zone time)
+    Decode.map3 (Model zone time)
         (Decode.oneOf [ Decode.field "day1" Day1.stateDecoder, Decode.succeed Day1.init ])
         (Decode.oneOf [ Decode.field "day2" Day2.stateDecoder, Decode.succeed Day2.init ])
+        (Decode.oneOf [ Decode.field "day3" Day3.stateDecoder, Decode.succeed Day3.init ])

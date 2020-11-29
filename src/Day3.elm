@@ -1,22 +1,24 @@
-module Day2 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
+module Day3 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (absolute, backgroundColor, block, borderRadius, calc, center, display, displayFlex, flexWrap, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
+import Css exposing (center, displayFlex, flexWrap, height, justifyContent, maxWidth, pct, px, right, spaceAround, spaceBetween, textAlign, wrap)
 import Css.Global as Css exposing (Snippet)
 import DesignSystem.SocialMedia exposing (facebookLink, twitterLink)
-import DesignSystem.Spacing as Spacing exposing (marginBottom, marginTop, padding2)
+import DesignSystem.Spacing as Spacing exposing (marginBottom, marginTop)
 import DesignSystem.Typography exposing (TypographyType(..), typography)
-import Html.Styled exposing (Html, button, div, form, h1, input, p, text)
-import Html.Styled.Attributes exposing (class, css, type_, value)
+import Html.Styled exposing (Html, a, button, div, form, h1, img, input, p, span, text)
+import Html.Styled.Attributes exposing (alt, class, css, href, src, target, type_, value)
 import Html.Styled.Events exposing (onInput, onSubmit)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
+import Pages exposing (images)
+import Pages.ImagePath as ImagePath
 import Set exposing (Set)
 import String.Normalize exposing (removeDiacritics)
 import Time exposing (Posix, Zone)
 
 
 type alias Enigma =
-    { clue : String, answers : Set String }
+    { images : List String, answers : Set String }
 
 
 type Model
@@ -31,24 +33,15 @@ init =
 
 firstEnigma : Enigma
 firstEnigma =
-    { clue = "Grande Maman Pâques"
-    , answers = Set.fromList [ "Petit papa Noël" ]
+    { images = [ ImagePath.toString images.day3.day311, ImagePath.toString images.day3.day312, ImagePath.toString images.day3.day313, ImagePath.toString images.day3.day314, ImagePath.toString images.day3.day315, ImagePath.toString images.day3.day316 ]
+    , answers = Set.fromList [ "Rudolph", "Rudolph le renne" ]
     }
 
 
 otherEnigmas : List Enigma
 otherEnigmas =
-    [ { clue = "le grillon et le termite"
-      , answers = Set.fromList [ "la cigale et la fourmi", "la cigale et la fourmie" ]
-      }
-    , { clue = "combat deux"
-      , answers = Set.fromList [ "lutin", "un lutin" ]
-      }
-    , { clue = "Kebab Questionnaire"
-      , answers = Set.fromList [ "Burger Quiz", "Burger Quizz" ]
-      }
-    , { clue = "charrie lait"
-      , answers = Set.fromList [ "traineau", "un traineau" ]
+    [ { images = [ ImagePath.toString images.day3.day321, ImagePath.toString images.day3.day322, ImagePath.toString images.day3.day323, ImagePath.toString images.day3.day324 ]
+      , answers = Set.fromList [ "Retour vers le futur" ]
       }
     ]
 
@@ -97,7 +90,11 @@ getScore : Model -> Int
 getScore state =
     case state of
         InProgress model ->
-            (5 - List.length model.remaining - 1) * 5 - model.tries
+            let
+                finished =
+                    1 - List.length model.remaining
+            in
+            finished * 11 - max 0 model.tries
 
         Done tries ->
             25 - tries
@@ -119,16 +116,17 @@ view zone currentDate state =
     else
         div [ class "day2" ]
             [ Css.global styles
-            , typography Title1 h1 [ css [ marginTop Spacing.L, marginBottom Spacing.M, textAlign center ] ] "Jour 2 | Contrario"
+            , typography Title1 h1 [ css [ marginTop Spacing.L, marginBottom Spacing.M, textAlign center ] ] "Jour 3 | Concept"
             , case state of
                 InProgress model ->
                     div []
-                        [ typography Instructions p [ css [ textAlign center ] ] "Retrouvez le mot ou l'expression initiale en remplaçant les mots par leur synonyme, leur contraire ou un mot similaire dans l'indice."
-                        , typography Paragraph p [ css [ textAlign center, marginTop Spacing.S ] ] "Exemple 1 : Les saisons anciennes => Les temps modernes"
-                        , typography Paragraph p [ css [ textAlign center, marginBottom Spacing.S ] ] "Exemple 2 : Un étain au poulain => Un fer à cheval"
-                        , typography Instructions p [ css [ textAlign center ] ] "(Les accents et majuscules ne sont pas importants.)"
+                        [ p [ css [ textAlign center ] ]
+                            [ typography Instructions span [] "Retrouvez le mot ou l'expression grâce aux indices sur le plateau de jeu. "
+                            , typography Instructions a [ href "https://www.regledujeu.fr/concept/", target "_blank" ] "Voir les règles de Concept"
+                            ]
+                        , typography Instructions p [ css [ textAlign center, marginTop Spacing.S ] ] "(Les accents et majuscules ne sont pas importants.)"
                         , typography Paragraph p [ css [ textAlign right, marginTop Spacing.S, marginBottom Spacing.M ] ] ("Votre score : " ++ String.fromInt (getScore state))
-                        , typography HeroText p [ css [ textAlign center, marginBottom Spacing.M, marginTop Spacing.S, textTransform uppercase ] ] ("Indice : " ++ model.current.clue)
+                        , div [ class "images" ] (List.map (\image -> img [ src image, alt "image de l'énigme", class "image" ] []) model.current.images)
                         , form [ onSubmit (Try model.fieldValue), css [ textAlign center ] ]
                             [ input [ type_ "text", value model.fieldValue, onInput FieldChanged ] []
                             , button [ type_ "submit" ] [ text "Valider" ]
@@ -138,8 +136,8 @@ view zone currentDate state =
                 Done _ ->
                     div [ css [ textAlign center, marginTop Spacing.XL ] ]
                         [ typography HeroText p [] ("Défi terminé ! Votre score : " ++ String.fromInt (getScore state))
-                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 2 ]
-                        , p [] [ twitterLink 2 ]
+                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 3 ]
+                        , p [] [ twitterLink 3 ]
                         ]
             ]
 
@@ -180,14 +178,14 @@ stateDecoder =
                     "in-progress" ->
                         Decode.map2
                             (\tries remaining ->
-                                if remaining == 5 then
+                                if remaining == 2 then
                                     InProgress { tries = tries, current = firstEnigma, remaining = otherEnigmas, fieldValue = "" }
                                         |> Decode.succeed
 
                                 else
                                     let
                                         remainingEnigmas =
-                                            List.drop (5 - remaining - 1) otherEnigmas
+                                            List.drop (2 - remaining - 1) otherEnigmas
                                     in
                                     case remainingEnigmas of
                                         first :: others ->
@@ -211,4 +209,14 @@ stateDecoder =
 
 styles : List Snippet
 styles =
-    []
+    [ Css.class "images"
+        [ displayFlex
+        , flexWrap wrap
+        , justifyContent center
+        , marginBottom Spacing.M
+        ]
+    , Css.class "image"
+        [ height (px 150)
+        , maxWidth (pct 100)
+        ]
+    ]

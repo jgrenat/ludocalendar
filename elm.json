@@ -22,6 +22,7 @@
             "elm-community/json-extra": "4.3.0",
             "elm-community/list-extra": "8.2.4",
             "elm-community/maybe-extra": "5.2.0",
+            "feathericons/elm-feather": "1.5.0",
             "justinmimbs/date": "3.2.1",
             "krisajenkins/remotedata": "6.0.1",
             "kuon/elm-string-normalize": "1.0.2",

@@ -1,8 +1,9 @@
 module Day1 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (absolute, backgroundColor, block, borderRadius, calc, capitalize, center, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
+import Css exposing (absolute, backgroundColor, block, borderRadius, calc, capitalize, center, cursor, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, pointer, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
 import Css.Global as Css exposing (Snippet)
 import Css.Media as Media
+import DesignSystem.SocialMedia exposing (facebookLink, twitterLink)
 import DesignSystem.Spacing as Spacing exposing (marginBottom, marginTop, padding2)
 import DesignSystem.Typography exposing (TypographyType(..), typography)
 import Html.Styled exposing (Html, button, div, h1, p, ul)
@@ -149,14 +150,18 @@ view zone currentDate state =
                             Set.size model.current.correctAnswers + Set.size model.current.remainingAnswers
                     in
                     div []
-                        [ typography Instructions p [ css [ textAlign center ] ] "Veuillez retrouver les mots correspondant à l'indice et au nombre de mots suivant ci-dessous :"
-                        , typography HeroText p [ css [ textAlign center, marginBottom Spacing.M, marginTop Spacing.S, textTransform uppercase ] ] (model.current.clue ++ " – " ++ String.fromInt answersCount ++ " mots")
+                        [ typography Instructions p [ css [ textAlign center ] ] "Retrouvez les mots correspondant à l'indice ci-dessous."
                         , typography Paragraph p [ css [ textAlign right, marginTop Spacing.S, marginBottom Spacing.M ] ] ("Votre score : " ++ String.fromInt (getScore model.current model.done))
+                        , typography HeroText p [ css [ textAlign center, marginBottom Spacing.M, marginTop Spacing.S, textTransform uppercase ] ] (String.fromInt answersCount ++ " mots en rapport avec l'indice : " ++ model.current.clue)
                         , ul [ class "grid" ] (List.map (viewWord model.current) (Set.toList model.current.words))
                         ]
 
                 Done score ->
-                    typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] ("Défi terminé ! Votre score : " ++ String.fromInt score)
+                    div [ css [ textAlign center, marginTop Spacing.XL ] ]
+                        [ typography HeroText p [] ("Défi terminé ! Votre score : " ++ String.fromInt score)
+                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 1 ]
+                        , p [] [ twitterLink 1 ]
+                        ]
             ]
 
 
@@ -252,7 +257,6 @@ viewWord : CurrentEnigma -> String -> Html Msg
 viewWord currentEnigma word =
     button
         [ class "card"
-        , href "#"
         , type_ "button"
         , onClick (Try word)
         , attributeIf (Set.member word currentEnigma.correctAnswers) (class "card--correct")
@@ -277,6 +281,7 @@ styles =
         , margin (px 5)
         , paddingTop (px 10)
         , position relative
+        , cursor pointer
         , Css.children
             [ Css.class "word"
                 [ position absolute

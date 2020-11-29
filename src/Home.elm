@@ -1,10 +1,11 @@
 module Home exposing (view)
 
-import Css exposing (absolute, backgroundColor, block, calc, center, color, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minHeight, minWidth, minus, none, paddingTop, pct, position, px, relative, rem, rgb, right, textDecoration, top, transforms, translateX, translateY, width, wrap)
+import Css exposing (absolute, backgroundColor, center, color, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, none, pct, position, px, relative, rem, rgb, right, textDecoration, top, transforms, translateX, translateY, width, wrap)
 import Css.Global as Css exposing (Snippet)
 import Css.Media as Media
 import Day1
 import Day2
+import Day3
 import Html.Styled exposing (Html, a, div, text)
 import Html.Styled.Attributes exposing (class, href)
 import Model exposing (Model)
@@ -20,7 +21,7 @@ view model =
         days =
             [ ( 1, Day1.isDone model.day1, pages.day1 )
             , ( 2, Day2.isDone model.day2, pages.day2 )
-            , ( 3, False, pages.day2 )
+            , ( 3, Day3.isDone model.day3, pages.day3 )
             , ( 4, False, pages.day2 )
             , ( 5, False, pages.day2 )
             , ( 6, False, pages.day2 )
@@ -30,6 +31,7 @@ view model =
             , ( 10, False, pages.day2 )
             , ( 11, False, pages.day2 )
             , ( 12, False, pages.day2 )
+            , ( 13, False, pages.day2 )
             , ( 14, False, pages.day2 )
             , ( 15, False, pages.day2 )
             , ( 16, False, pages.day2 )
@@ -48,7 +50,7 @@ view model =
                 24
 
             else
-                Time.toDay model.zone model.currentDate - 23
+                Time.toDay model.zone model.currentDate
     in
     div [ class "days" ]
         (Css.global styles
