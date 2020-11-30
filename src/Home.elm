@@ -6,6 +6,7 @@ import Css.Media as Media
 import Day1
 import Day2
 import Day3
+import Day4
 import Html.Styled exposing (Html, a, div, text)
 import Html.Styled.Attributes exposing (class, href)
 import Model exposing (Model)
@@ -22,7 +23,7 @@ view model =
             [ ( 1, Day1.isDone model.day1, pages.day1 )
             , ( 2, Day2.isDone model.day2, pages.day2 )
             , ( 3, Day3.isDone model.day3, pages.day3 )
-            , ( 4, False, pages.day2 )
+            , ( 4, Day4.isDone model.day4, pages.day4 )
             , ( 5, False, pages.day2 )
             , ( 6, False, pages.day2 )
             , ( 7, False, pages.day2 )

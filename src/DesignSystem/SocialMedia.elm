@@ -14,7 +14,7 @@ twitterLink : Int -> Html msg
 twitterLink day =
     a
         [ rel "nofollow"
-        , href ("https://twitter.com/intent/tweet?text=%F0%9F%8E%84%F0%9F%8E%81%20J%27ai%20r%C3%A9ussi%20l%27%C3%A9preuve%20du%20jour%20" ++ String.fromInt day ++ "%20de%20LudoCalendar%2C%20le%20calendrier%20de%20l%27avent%20des%20jeux%20de%20soci%C3%A9t%C3%A9%20!%0Ahttps%3A%2F%2Fludocalendar.com")
+        , href ("https://twitter.com/intent/tweet?text=%F0%9F%8E%84%F0%9F%8E%81%20J%27ai%20r%C3%A9ussi%20l%27%C3%A9preuve%20du%20jour%20" ++ String.fromInt day ++ "%20de%20LudoCalendar%2C%20le%20calendrier%20de%20l%27Avent%20des%20jeux%20de%20soci%C3%A9t%C3%A9%20!%0Ahttps%3A%2F%2Fludocalendar.com")
         , target "_blank"
         , css [ display inlineFlex, alignItems center ]
         ]

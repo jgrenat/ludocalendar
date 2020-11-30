@@ -24,7 +24,7 @@ view document page =
         div [ class "container" ]
             [ stylesheet
             , header
-            , typography HeroText p [ class "catchPhrase" ] "🎄🎁 Le calendrier de l'avent de vos jeux de société ! 🎁🎄"
+            , typography HeroText p [ class "catchPhrase" ] "🎄🎁 Le calendrier de l'Avent de vos jeux de société ! 🎁🎄"
             , div [ css [ marginTop Spacing.M ] ] document.body
             ]
             |> toUnstyled

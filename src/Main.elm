@@ -4,6 +4,7 @@ import Color
 import Day1
 import Day2
 import Day3
+import Day4
 import Feed
 import Head
 import Head.Seo as Seo
@@ -35,12 +36,12 @@ manifest =
     , categories = [ Pages.Manifest.Category.entertainment ]
     , displayMode = Manifest.Standalone
     , orientation = Manifest.Portrait
-    , description = "LudoCalendar - A statically typed site generator."
+    , description = "LudoCalendar - Le calendrier de l'Avent de vos jeux de société !"
     , iarcRatingId = Nothing
-    , name = "elm-pages-starter"
+    , name = "LudoCalendar"
     , themeColor = Just Color.white
     , startUrl = pages.index
-    , shortName = Just "elm-pages-starter"
+    , shortName = Just "LudoCalendar"
     , sourceIcon = images.androidChrome512x512
     , icons = []
     }
@@ -112,7 +113,7 @@ markdownDocument =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init Day3.init
+    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init Day3.init Day4.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -127,6 +128,7 @@ type Msg
     | Day1Msg Day1.Msg
     | Day2Msg Day2.Msg
     | Day3Msg Day3.Msg
+    | Day4Msg Day4.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -170,6 +172,13 @@ update msg model =
                     Day3.update model.day3 day3Msg
             in
             ( { model | day3 = newModel }, saveDay 3 Day3.saveState newModel )
+
+        Day4Msg day4Msg ->
+            let
+                newModel =
+                    Day4.update model.day4 day4Msg
+            in
+            ( { model | day4 = newModel }, saveDay 4 Day4.saveState newModel )
 
 
 subscriptions _ _ _ =
@@ -225,6 +234,14 @@ pageView model siteMetadata page viewForPage =
             , body =
                 [ Day3.view model.zone model.currentDate model.day3
                     |> Html.Styled.map Day3Msg
+                ]
+            }
+
+        Metadata.Day4 ->
+            { title = "LudoCalendar – Quatrième jour"
+            , body =
+                [ Day4.view model.zone model.currentDate model.day4
+                    |> Html.Styled.map Day4Msg
                 ]
             }
 
@@ -313,6 +330,22 @@ head metadata =
                         , title = "Troisième jour"
                         }
                         |> Seo.website
+
+                Metadata.Day4 ->
+                    Seo.summaryLarge
+                        { canonicalUrlOverride = Nothing
+                        , siteName = "LudoCalendar"
+                        , image =
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
+                            , dimensions = Nothing
+                            , mimeType = Nothing
+                            }
+                        , description = siteTagline
+                        , locale = Nothing
+                        , title = "Quatrième jour"
+                        }
+                        |> Seo.website
            )
 
 
@@ -323,7 +356,7 @@ canonicalSiteUrl =
 
 siteTagline : String
 siteTagline =
-    "Le calendrier de l'avent de vos jeux de société !"
+    "Le calendrier de l'Event de vos jeux de société !"
 
 
 saveDay : Int -> (model -> Encode.Value) -> model -> Cmd msg
@@ -333,7 +366,8 @@ saveDay day encoder model =
 
 stateDecoder : Zone -> Posix -> Decoder Model
 stateDecoder zone time =
-    Decode.map3 (Model zone time)
+    Decode.map4 (Model zone time)
         (Decode.oneOf [ Decode.field "day1" Day1.stateDecoder, Decode.succeed Day1.init ])
         (Decode.oneOf [ Decode.field "day2" Day2.stateDecoder, Decode.succeed Day2.init ])
         (Decode.oneOf [ Decode.field "day3" Day3.stateDecoder, Decode.succeed Day3.init ])
+        (Decode.oneOf [ Decode.field "day4" Day4.stateDecoder, Decode.succeed Day4.init ])
