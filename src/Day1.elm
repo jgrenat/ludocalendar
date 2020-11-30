@@ -3,15 +3,18 @@ module Day1 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update,
 import Css exposing (absolute, backgroundColor, block, borderRadius, calc, capitalize, center, cursor, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, pointer, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
 import Css.Global as Css exposing (Snippet)
 import Css.Media as Media
+import DesignSystem.Link exposing (homeLink)
 import DesignSystem.SocialMedia exposing (facebookLink, twitterLink)
 import DesignSystem.Spacing as Spacing exposing (marginBottom, marginTop, padding2)
 import DesignSystem.Typography exposing (TypographyType(..), typography)
-import Html.Styled exposing (Html, button, div, h1, p, ul)
+import Html.Styled exposing (Html, a, button, div, h1, p, ul)
 import Html.Styled.Attributes exposing (class, css, href, type_)
 import Html.Styled.Events exposing (onClick)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Extra as Decode
 import Json.Encode as Encode
+import Pages exposing (pages)
+import Pages.PagePath as PagePath
 import Set exposing (Set)
 import Time exposing (Posix, Zone)
 import Utils.Html exposing (attributeIf)
@@ -136,7 +139,7 @@ view zone currentDate state =
             else
                 Time.toDay zone currentDate
     in
-    if maxDay <= 1 then
+    if maxDay < 1 then
         typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] "Ce jour n'est pas encore accessible, petit malin ! 😉🎁🎄"
 
     else
@@ -162,6 +165,7 @@ view zone currentDate state =
                         , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 1 ]
                         , p [] [ twitterLink 1 ]
                         ]
+            , homeLink
             ]
 
 

@@ -3,6 +3,7 @@ module Day4 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update,
 import Css exposing (bold, center, color, cursor, displayFlex, flexWrap, fontWeight, justifyContent, listStyle, none, pointer, right, spaceAround, textAlign, wrap)
 import Css.Global as Css exposing (Snippet)
 import DesignSystem.Colors as Colors
+import DesignSystem.Link exposing (homeLink)
 import DesignSystem.SocialMedia exposing (facebookLink, twitterLink)
 import DesignSystem.Spacing as Spacing exposing (SpacingSize(..), marginBottom, marginTop, paddingLeft)
 import DesignSystem.Typography exposing (TypographyType(..), typography)
@@ -264,7 +265,7 @@ view zone currentDate state =
             else
                 Time.toDay zone currentDate
     in
-    if maxDay <= 4 then
+    if maxDay < 4 then
         typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] "Ce jour n'est pas encore accessible, petit malin ! 😉🎁🎄"
 
     else
@@ -339,6 +340,7 @@ view zone currentDate state =
                                     , viewForm OneTry fieldValue
                                     ]
                         ]
+            , homeLink
             ]
 
 
