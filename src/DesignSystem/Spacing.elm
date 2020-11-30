@@ -1,4 +1,4 @@
-module DesignSystem.Spacing exposing (SpacingSize(..), margin2, marginBottom, marginLeft, marginRight, marginTop, padding2, paddingLeft, paddingTop, spacing)
+module DesignSystem.Spacing exposing (SpacingSize(..), margin2, marginBottom, marginLeft, marginRight, marginTop, padding, padding2, paddingLeft, paddingTop, spacing)
 
 import Css exposing (Px, Style, px)
 
@@ -61,6 +61,11 @@ marginRight spacingSize =
 paddingTop : SpacingSize -> Style
 paddingTop spacingSize =
     Css.paddingTop (spacing spacingSize)
+
+
+padding : SpacingSize -> Style
+padding spacingSize =
+    Css.padding (spacing spacingSize)
 
 
 paddingLeft : SpacingSize -> Style

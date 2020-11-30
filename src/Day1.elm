@@ -1,6 +1,6 @@
 module Day1 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (absolute, backgroundColor, block, borderRadius, calc, capitalize, center, cursor, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, pointer, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
+import Css exposing (absolute, backgroundColor, block, borderRadius, calc, capitalize, center, color, cursor, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, pointer, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
 import Css.Global as Css exposing (Snippet)
 import Css.Media as Media
 import DesignSystem.Link exposing (homeLink)
@@ -286,6 +286,7 @@ styles =
         , paddingTop (px 10)
         , position relative
         , cursor pointer
+        , color (rgb 0 0 0)
         , Css.children
             [ Css.class "word"
                 [ position absolute
@@ -297,6 +298,7 @@ styles =
                 , padding2 Spacing.XXS Spacing.XS
                 , borderRadius (px 5)
                 , textTransform uppercase
+                , color (rgb 0 0 0)
                 , Media.withMedia [ Media.all [ Media.maxWidth (px 500) ] ]
                     [ fontSize (em 0.9) ]
                 ]

@@ -27,7 +27,7 @@ import Pages.Platform
 import Pages.StaticHttp as StaticHttp
 import Ports exposing (saveToLocalStorage, stateFromLocalStorage)
 import Task
-import Time exposing (Posix, Zone, millisToPosix)
+import Time exposing (Posix, Zone, millisToPosix, posixToMillis)
 
 
 manifest : Manifest.Config Pages.PathKey
