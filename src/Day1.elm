@@ -1,6 +1,6 @@
 module Day1 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (absolute, backgroundColor, block, borderRadius, calc, capitalize, center, color, cursor, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, pointer, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
+import Css exposing (absolute, backgroundColor, block, borderRadius, borderStyle, calc, capitalize, center, color, cursor, dashed, display, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, pointer, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
 import Css.Global as Css exposing (Snippet)
 import Css.Media as Media
 import DesignSystem.Link exposing (homeLink)
@@ -10,6 +10,7 @@ import DesignSystem.Typography exposing (TypographyType(..), typography)
 import Html.Styled exposing (Html, a, button, div, h1, p, ul)
 import Html.Styled.Attributes exposing (class, css, href, type_)
 import Html.Styled.Events exposing (onClick)
+import Html.Styled.Keyed as Keyed
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Extra as Decode
 import Json.Encode as Encode
@@ -156,7 +157,7 @@ view zone currentDate state =
                         [ typography Instructions p [ css [ textAlign center ] ] "Retrouvez les mots correspondant à l'indice ci-dessous."
                         , typography Paragraph p [ css [ textAlign right, marginTop Spacing.S, marginBottom Spacing.M ] ] ("Votre score : " ++ String.fromInt (getScore model.current model.done))
                         , typography HeroText p [ css [ textAlign center, marginBottom Spacing.M, marginTop Spacing.S, textTransform uppercase ] ] (String.fromInt answersCount ++ " mots en rapport avec l'indice : " ++ model.current.clue)
-                        , ul [ class "grid" ] (List.map (viewWord model.current) (Set.toList model.current.words))
+                        , Keyed.ul [ class "grid" ] (List.map (\word -> ( word, viewWord model.current word )) (Set.toList model.current.words))
                         ]
 
                 Done score ->
@@ -287,6 +288,7 @@ styles =
         , position relative
         , cursor pointer
         , color (rgb 0 0 0)
+        , Css.focus [ backgroundColor (rgb 236 200 87), borderStyle dashed ]
         , Css.children
             [ Css.class "word"
                 [ position absolute
