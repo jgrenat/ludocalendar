@@ -110,7 +110,6 @@ update modelState msg =
             let
                 updatedResults =
                     updateState enigma state otherEnigmas msg
-                        |> Debug.log "updated"
             in
             case updatedResults of
                 SameEnigma enigmaState ->
