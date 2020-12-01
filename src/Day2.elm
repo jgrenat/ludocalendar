@@ -42,14 +42,14 @@ otherEnigmas =
     [ { clue = "le grillon et le termite"
       , answers = Set.fromList [ "la cigale et la fourmi", "la cigale et la fourmie" ]
       }
-    , { clue = "combat deux"
-      , answers = Set.fromList [ "lutin", "un lutin" ]
+    , { clue = "bagarre zéro"
+      , answers = Set.fromList [ "lutin", "lutin" ]
       }
     , { clue = "Kebab Questionnaire"
       , answers = Set.fromList [ "Burger Quiz", "Burger Quizz" ]
       }
-    , { clue = "charrie lait"
-      , answers = Set.fromList [ "traineau", "un traineau" ]
+    , { clue = "L'almanach de l'Après"
+      , answers = Set.fromList [ "Le calendrier de l'Avent", "calendrier de l'Avent", "Le calendrier de l'Avant", "calendrier de l'Avant", "Un calendrier de l'Avent", "Un calendrier de l'Avant" ]
       }
     ]
 
