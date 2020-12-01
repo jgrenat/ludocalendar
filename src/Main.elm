@@ -36,7 +36,7 @@ manifest =
     , categories = [ Pages.Manifest.Category.entertainment ]
     , displayMode = Manifest.Standalone
     , orientation = Manifest.Portrait
-    , description = "LudoCalendar - Le calendrier de l'Avent de vos jeux de société !"
+    , description = "LudoCalendar - Le calendrier de l'Avent de vos jeux de société"
     , iarcRatingId = Nothing
     , name = "LudoCalendar"
     , themeColor = Just Color.white
@@ -356,7 +356,7 @@ canonicalSiteUrl =
 
 siteTagline : String
 siteTagline =
-    "Le calendrier de l'Event de vos jeux de société !"
+    "Le calendrier de l'Avent de vos jeux de société !"
 
 
 saveDay : Int -> (model -> Encode.Value) -> model -> Cmd msg
