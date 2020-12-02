@@ -12,10 +12,11 @@ import Html.Styled.Attributes exposing (class, css, type_, value)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
+import List.Extra as List
 import List.Nonempty as Nonempty exposing (Nonempty(..))
 import String.Normalize exposing (removeDiacritics)
 import Time exposing (Posix, Zone)
-import Utils.Html exposing (nothing)
+import Utils.Html exposing (nothing, viewMaybe)
 
 
 type alias Enigma =
@@ -262,7 +263,7 @@ view zone currentDate state =
                 24
 
             else
-                Time.toDay zone currentDate
+                Time.toDay zone currentDate + 2
     in
     if maxDay < 4 then
         typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] "Ce jour n'est pas encore accessible, petit malin ! 😉🎁🎄"
@@ -272,9 +273,10 @@ view zone currentDate state =
             [ Css.global styles
             , typography Title1 h1 [ css [ marginTop Spacing.L, marginBottom Spacing.M, textAlign center ] ] "Jour 4 | iKnow"
             , case state of
-                Done _ ->
+                Done previousResults ->
                     div [ css [ textAlign center, marginTop Spacing.XL ] ]
-                        [ typography HeroText p [] ("Défi terminé ! Votre score : " ++ String.fromInt (getScore state))
+                        [ viewMaybe viewQuestionResult (List.head previousResults)
+                        , typography HeroText p [] ("Défi terminé ! Votre score : " ++ String.fromInt (getScore state))
                         , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 3 ]
                         , p [] [ twitterLink 3 ]
                         ]
@@ -359,13 +361,13 @@ viewQuestionResult ( enigma, cluesNumber, isCorrect ) =
                         "1 point"
         in
         p [ css [ marginTop Spacing.M, marginBottom Spacing.M, textAlign center ] ]
-            [ typography Paragraph span [ css [ color Colors.primary ] ] ("Bravo ! La réponse était bien " ++ Nonempty.head enigma.answers)
+            [ typography Paragraph span [ css [ color Colors.primary ] ] ("Bravo ! La réponse était bien : " ++ Nonempty.head enigma.answers ++ ".")
             , typography Paragraph span [ css [ color Colors.primary ] ] (" Vous avez gagné " ++ points ++ " !")
             ]
 
     else
         p [ css [ marginTop Spacing.M, marginBottom Spacing.M, textAlign center ] ]
-            [ typography Paragraph span [ css [ color Colors.secondary ] ] ("Dommage... La bonne réponse était " ++ Nonempty.head enigma.answers)
+            [ typography Paragraph span [ css [ color Colors.secondary ] ] ("Dommage... La bonne réponse était : " ++ Nonempty.head enigma.answers ++ ".")
             ]
 
 
@@ -440,7 +442,7 @@ saveState modelState =
 
         OtherQuestions { currentState, previousResults } ->
             Encode.object
-                [ ( "state", Encode.string "other-question" )
+                [ ( "state", Encode.string "other-questions" )
                 , ( "enigma-state", encodeEnigmaState currentState )
                 , ( "previous-results", encodeResults (Nonempty.toList previousResults) )
                 ]
@@ -504,51 +506,105 @@ encodeResults previousResults =
 
 stateDecoder : Decoder Model
 stateDecoder =
-    Decode.succeed init
+    Decode.field "state" Decode.string
+        |> Decode.andThen
+            (\state ->
+                case state of
+                    "first-question" ->
+                        Decode.map (\enigmaState -> FirstQuestion { enigma = firstEnigma, state = enigmaState }) (Decode.field "enigma-state" enigmaStateDecoder)
+
+                    "other-questions" ->
+                        Decode.map2 (\enigmaState ( previousResults, current, remaining ) -> OtherQuestions { current = current, currentState = enigmaState, previousResults = previousResults, remaining = remaining })
+                            (Decode.field "enigma-state" enigmaStateDecoder)
+                            otherEnigmasDecoder
+
+                    "done" ->
+                        Decode.map Done (Decode.field "results" resultsDecoder |> Decode.map Nonempty.toList)
+
+                    _ ->
+                        Decode.fail "Invalid state"
+            )
 
 
+enigmaStateDecoder : Decoder EnigmaState
+enigmaStateDecoder =
+    Decode.field "step" Decode.string
+        |> Decode.andThen
+            (\step ->
+                case step of
+                    "clues-number-choice" ->
+                        Decode.succeed CluesNumberChoice
 
---Decode.field "state" Decode.string
---    |> Decode.andThen
---        (\state ->
---            case state of
---                "first-question" ->
---                    Decode.field "step" Decode.string
---                    |> Decode.andThen (\step ->
---                            case step of
---                                    "clues-number-choice" ->
---                        )
---                _ -> Decode.fail "Invalid state"
---                "in-progress" ->
---                    Decode.map2
---                        (\tries remaining ->
---                            if remaining == 2 then
---                                InProgress { tries = tries, current = firstEnigma, remaining = otherEnigmas, fieldValue = "" }
---                                    |> Decode.succeed
---
---                            else
---                                let
---                                    remainingEnigmas =
---                                        List.drop (2 - remaining - 1) otherEnigmas
---                                in
---                                case remainingEnigmas of
---                                    first :: others ->
---                                        InProgress { tries = tries, current = first, remaining = others, fieldValue = "" }
---                                            |> Decode.succeed
---
---                                    [] ->
---                                        Decode.fail "Invalid state"
---                        )
---                        (Decode.field "tries" Decode.int)
---                        (Decode.field "remaining" Decode.int)
---                        |> Decode.andThen identity
---
---                "done" ->
---                    Decode.map Done (Decode.field "tries" Decode.int)
---
---                stateValue ->
---                    Decode.fail ("Unknown state value: " ++ stateValue)
---        )
+                    "first-try" ->
+                        Decode.field "clues-number" cluesNumberDecoder
+                            |> Decode.map (\cluesNumber -> FirstTry cluesNumber "")
+
+                    "second-try" ->
+                        Decode.map2 (\cluesNumber firstWrongAnswer -> SecondTry cluesNumber "" firstWrongAnswer)
+                            (Decode.field "clues-number" cluesNumberDecoder)
+                            (Decode.field "first-wrong-answer" Decode.string)
+
+                    "third-try" ->
+                        Decode.map3 (\cluesNumber firstWrongAnswer secondWrongAnswer -> ThirdTry cluesNumber "" firstWrongAnswer secondWrongAnswer)
+                            (Decode.field "clues-number" cluesNumberDecoder)
+                            (Decode.field "first-wrong-answer" Decode.string)
+                            (Decode.field "second-wrong-answer" Decode.string)
+
+                    _ ->
+                        Decode.fail ("Invalid step: " ++ step)
+            )
+
+
+otherEnigmasDecoder : Decoder ( Nonempty ( Enigma, CluesNumber, Bool ), Enigma, List Enigma )
+otherEnigmasDecoder =
+    Decode.andThen
+        (\previousResults ->
+            case List.drop (Nonempty.length previousResults) (firstEnigma :: otherEnigmas) of
+                first :: others ->
+                    Decode.succeed ( previousResults, first, others )
+
+                [] ->
+                    Decode.fail "Too many results in the previous results list"
+        )
+        (Decode.field "previous-results" resultsDecoder)
+
+
+resultsDecoder : Decoder (Nonempty ( Enigma, CluesNumber, Bool ))
+resultsDecoder =
+    Decode.list
+        (Decode.map2 Tuple.pair
+            (Decode.field "clues-number" cluesNumberDecoder)
+            (Decode.field "result" Decode.bool)
+        )
+        |> Decode.andThen
+            (\previousResults ->
+                List.zip (List.reverse previousResults) (firstEnigma :: otherEnigmas)
+                    |> List.map (\( ( cluesNumber, result ), enigma ) -> ( enigma, cluesNumber, result ))
+                    |> List.reverse
+                    |> Nonempty.fromList
+                    |> Maybe.map Decode.succeed
+                    |> Maybe.withDefault (Decode.fail "Invalid previous results")
+            )
+
+
+cluesNumberDecoder : Decoder CluesNumber
+cluesNumberDecoder =
+    Decode.int
+        |> Decode.andThen
+            (\number ->
+                case number of
+                    1 ->
+                        Decode.succeed One
+
+                    2 ->
+                        Decode.succeed Two
+
+                    3 ->
+                        Decode.succeed Three
+
+                    _ ->
+                        Decode.fail ("Invalid value for clues number: " ++ String.fromInt number)
+            )
 
 
 styles : List Snippet

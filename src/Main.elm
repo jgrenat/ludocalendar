@@ -27,7 +27,7 @@ import Pages.Platform
 import Pages.StaticHttp as StaticHttp
 import Ports exposing (saveToLocalStorage, stateFromLocalStorage)
 import Task
-import Time exposing (Posix, Zone, millisToPosix, posixToMillis)
+import Time exposing (Posix, Zone, millisToPosix)
 
 
 manifest : Manifest.Config Pages.PathKey
@@ -370,4 +370,4 @@ stateDecoder zone time =
         (Decode.oneOf [ Decode.field "day1" Day1.stateDecoder, Decode.succeed Day1.init ])
         (Decode.oneOf [ Decode.field "day2" Day2.stateDecoder, Decode.succeed Day2.init ])
         (Decode.oneOf [ Decode.field "day3" Day3.stateDecoder, Decode.succeed Day3.init ])
-        (Decode.oneOf [ Decode.field "day4" Day4.stateDecoder, Decode.succeed Day4.init ])
+        (Decode.oneOf [ Decode.field "day4" Day4.stateDecoder ])
