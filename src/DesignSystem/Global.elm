@@ -1,42 +1,41 @@
 module DesignSystem.Global exposing (styles)
 
-import Css exposing (auto, backgroundAttachment, backgroundColor, backgroundImage, backgroundPosition, backgroundSize, block, border3, borderColor, borderRadius, boxShadow, boxShadow5, center, color, contain, cover, display, fixed, fontStyle, fontWeight, height, hex, int, italic, margin, maxWidth, minHeight, none, outline, pct, px, rgb, rgba, solid, textAlign, textDecoration, underline, url, width, zero)
-import Css.Global as Css exposing (Snippet, em)
+import Css exposing (auto, backgroundAttachment, backgroundColor, backgroundImage, backgroundSize, block, border3, borderColor, borderRadius, borderStyle, boxShadow5, center, color, cover, cursor, dashed, display, fixed, fontStyle, fontWeight, height, hex, int, italic, margin, maxWidth, minHeight, none, outline, pct, pointer, px, rgb, solid, textAlign, textDecoration, transparent, underline, url, width, zero)
+import Css.Global as Global exposing (Snippet)
 import Css.Media as Media
-import DesignSystem.Button exposing (ButtonSize(..))
 import DesignSystem.Colors as Colors
 import DesignSystem.Spacing as Spacing exposing (SpacingSize(..), marginBottom, marginTop, padding, padding2)
-import DesignSystem.Typography as FontSize exposing (FontFamily(..), fontFamily, fontSize)
+import DesignSystem.Typography exposing (FontFamily(..), fontFamily)
 
 
 styles : List Snippet
 styles =
-    [ Css.html
+    [ Global.html
         [ height (pct 100)
         ]
-    , Css.body
+    , Global.body
         [ height (pct 100)
         , fontFamily Lato
         , backgroundImage (url "/images/background.svg")
         , backgroundSize cover
         , backgroundAttachment fixed
         ]
-    , Css.header
+    , Global.header
         [ textAlign center
         , display block
         , marginBottom M
-        , Css.children [ Css.a [ textDecoration none ] ]
+        , Global.children [ Global.a [ textDecoration none ] ]
         ]
-    , Css.class "footer"
+    , Global.class "footer"
         [ textAlign center
         , marginTop L
         , marginBottom M
         ]
-    , Css.a
+    , Global.a
         [ textDecoration underline
         , Css.hover [ textDecoration none ]
         ]
-    , Css.class "container"
+    , Global.class "container"
         [ maxWidth (pct 100)
         , width (px 848)
         , margin auto
@@ -48,23 +47,23 @@ styles =
             [ padding2 XS XS
             ]
         ]
-    , Css.class "catchPhrase"
+    , Global.class "catchPhrase"
         [ textAlign center ]
-    , Css.class "panel"
+    , Global.class "panel"
         [ backgroundColor Colors.panelColor
         , padding2 S S
         , boxShadow5 (px 0) (px 1) (px 10) (px -4) Colors.containerShadow
         , borderRadius (px 10)
         ]
-    , Css.a
-        [ Css.children
-            [ Css.class "panel"
+    , Global.a
+        [ Global.children
+            [ Global.class "panel"
                 [ Css.hover [ backgroundColor Colors.panelLinkColor ]
                 , textDecoration none
                 ]
             ]
         ]
-    , Css.input
+    , Global.input
         [ borderColor Colors.primary
         , padding Spacing.XS
         , Css.focus
@@ -72,7 +71,7 @@ styles =
             , backgroundColor (hex "ddFFdd")
             ]
         ]
-    , Css.button
+    , Global.button
         [ color (rgb 250 250 250)
         , borderRadius zero
         , border3 (px 2) solid Colors.primary
@@ -83,16 +82,28 @@ styles =
             , borderColor (hex "226622")
             , backgroundColor (hex "226622")
             ]
+        , Global.withClass "button--secondary"
+            [ border3 (px 1) solid (rgb 0 0 0)
+            , backgroundColor transparent
+            , color (rgb 0 0 0)
+            , cursor pointer
+            , Css.hover
+                [ backgroundColor (rgb 220 220 220)
+                ]
+            , Css.focus
+                [ borderStyle dashed
+                ]
+            ]
         ]
-    , Css.typeSelector "block-content"
-        [ Css.descendants
-            [ Css.strong
+    , Global.typeSelector "block-content"
+        [ Global.descendants
+            [ Global.strong
                 [ fontWeight (int 900)
                 ]
-            , em
+            , Global.em
                 [ fontStyle italic
                 ]
-            , Css.a
+            , Global.a
                 [ textDecoration underline
                 , Css.hover [ textDecoration none ]
                 ]

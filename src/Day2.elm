@@ -1,19 +1,20 @@
 module Day2 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (absolute, backgroundColor, block, borderRadius, calc, center, display, displayFlex, flexWrap, height, justifyContent, left, margin, minWidth, minus, paddingTop, pct, position, px, relative, rgb, right, textAlign, textTransform, top, uppercase, width, wrap)
+import Css exposing (center, right, textAlign, textTransform, uppercase)
 import Css.Global as Css exposing (Snippet)
 import DesignSystem.Link exposing (homeLink)
 import DesignSystem.SocialMedia exposing (facebookLink, twitterLink)
-import DesignSystem.Spacing as Spacing exposing (marginBottom, marginTop, padding2)
+import DesignSystem.Spacing as Spacing exposing (marginBottom, marginTop)
 import DesignSystem.Typography exposing (TypographyType(..), typography)
 import Html.Styled exposing (Html, button, div, form, h1, input, p, text)
 import Html.Styled.Attributes exposing (class, css, type_, value)
-import Html.Styled.Events exposing (onInput, onSubmit)
+import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
 import Set exposing (Set)
 import String.Normalize exposing (removeDiacritics)
 import Time exposing (Posix, Zone)
+import Utils.Html exposing (viewMaybe)
 
 
 type alias Enigma =
@@ -21,13 +22,13 @@ type alias Enigma =
 
 
 type Model
-    = InProgress { tries : Int, current : Enigma, remaining : List Enigma, fieldValue : String }
-    | Done Int
+    = InProgress { giveUp : Int, tries : Int, current : Enigma, remaining : List Enigma, fieldValue : String, showAnswer : Maybe String }
+    | Done Int Int (Maybe String)
 
 
 init : Model
 init =
-    InProgress { tries = 0, current = firstEnigma, remaining = otherEnigmas, fieldValue = "" }
+    InProgress { giveUp = 0, tries = 0, current = firstEnigma, remaining = otherEnigmas, fieldValue = "", showAnswer = Nothing }
 
 
 firstEnigma : Enigma
@@ -57,6 +58,7 @@ otherEnigmas =
 type Msg
     = Try String
     | FieldChanged String
+    | GiveUp
 
 
 normalize : String -> String
@@ -79,18 +81,34 @@ update state msg =
                                 , current = firstRemaining
                                 , remaining = others
                                 , fieldValue = ""
+                                , showAnswer = Nothing
                             }
 
                     [] ->
-                        Done (model.tries + 1)
+                        Done model.giveUp (model.tries + 1) Nothing
 
             else
-                InProgress { model | tries = model.tries + 1, fieldValue = "" }
+                InProgress { model | tries = model.tries + 1, fieldValue = "", showAnswer = Nothing }
 
         ( InProgress model, FieldChanged value ) ->
             InProgress { model | fieldValue = value }
 
-        ( Done _, _ ) ->
+        ( InProgress model, GiveUp ) ->
+            case model.remaining of
+                firstRemaining :: others ->
+                    InProgress
+                        { model
+                            | current = firstRemaining
+                            , remaining = others
+                            , fieldValue = ""
+                            , showAnswer = Set.toList model.current.answers |> List.head
+                            , giveUp = model.giveUp + 1
+                        }
+
+                [] ->
+                    Done (model.giveUp + 1) model.tries (Set.toList model.current.answers |> List.head)
+
+        ( Done _ _ _, _ ) ->
             state
 
 
@@ -98,10 +116,10 @@ getScore : Model -> Int
 getScore state =
     case state of
         InProgress model ->
-            (5 - List.length model.remaining - 1) * 5 - model.tries
+            (5 - List.length model.remaining - model.giveUp - 1) * 5 - model.tries
 
-        Done tries ->
-            25 - tries
+        Done giveUp tries _ ->
+            (25 - 5 * giveUp) - tries
 
 
 view : Zone -> Posix -> Model -> Html Msg
@@ -129,16 +147,21 @@ view zone currentDate state =
                         , typography Paragraph p [ css [ textAlign center, marginBottom Spacing.S ] ] "Exemple 2 : Un étain au poulain => Un fer à cheval"
                         , typography Instructions p [ css [ textAlign center ] ] "(Les accents et majuscules ne sont pas importants.)"
                         , typography Paragraph p [ css [ textAlign right, marginTop Spacing.S, marginBottom Spacing.M ] ] ("Votre score : " ++ String.fromInt (getScore state))
+                        , viewMaybe viewLastAnswer model.showAnswer
                         , typography HeroText p [ css [ textAlign center, marginBottom Spacing.M, marginTop Spacing.S, textTransform uppercase ] ] ("Indice : " ++ model.current.clue)
                         , form [ onSubmit (Try model.fieldValue), css [ textAlign center ] ]
                             [ input [ type_ "text", value model.fieldValue, onInput FieldChanged ] []
                             , button [ type_ "submit" ] [ text "Valider" ]
+                            , p [ css [ marginTop Spacing.S ] ]
+                                [ button [ type_ "button", class "button--secondary", onClick GiveUp ] [ text "Passer cette énigme" ]
+                                ]
                             ]
                         ]
 
-                Done _ ->
+                Done _ _ showAnswer ->
                     div [ css [ textAlign center, marginTop Spacing.XL ] ]
-                        [ typography HeroText p [] ("Défi terminé ! Votre score : " ++ String.fromInt (getScore state))
+                        [ viewMaybe viewLastAnswer showAnswer
+                        , typography HeroText p [] ("Défi terminé ! Votre score : " ++ String.fromInt (getScore state))
                         , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 2 ]
                         , p [] [ twitterLink 2 ]
                         ]
@@ -146,10 +169,15 @@ view zone currentDate state =
             ]
 
 
+viewLastAnswer : String -> Html msg
+viewLastAnswer answer =
+    typography Instructions p [ css [ textAlign center, marginTop Spacing.M, marginBottom Spacing.M ] ] ("La réponse était : " ++ answer)
+
+
 isDone : Model -> Bool
 isDone model =
     case model of
-        Done _ ->
+        Done _ _ _ ->
             True
 
         InProgress _ ->
@@ -164,12 +192,14 @@ saveState state =
                 [ ( "state", Encode.string "in-progress" )
                 , ( "tries", Encode.int model.tries )
                 , ( "remaining", Encode.int (List.length model.remaining + 1) )
+                , ( "giveUp", Encode.int model.giveUp )
                 ]
 
-        Done tries ->
+        Done giveUp tries _ ->
             Encode.object
                 [ ( "state", Encode.string "done" )
                 , ( "tries", Encode.int tries )
+                , ( "giveUp", Encode.int giveUp )
                 ]
 
 
@@ -180,10 +210,10 @@ stateDecoder =
             (\state ->
                 case state of
                     "in-progress" ->
-                        Decode.map2
-                            (\tries remaining ->
+                        Decode.map3
+                            (\giveUp tries remaining ->
                                 if remaining == 5 then
-                                    InProgress { tries = tries, current = firstEnigma, remaining = otherEnigmas, fieldValue = "" }
+                                    InProgress { tries = tries, current = firstEnigma, remaining = otherEnigmas, fieldValue = "", showAnswer = Nothing, giveUp = giveUp }
                                         |> Decode.succeed
 
                                 else
@@ -193,18 +223,22 @@ stateDecoder =
                                     in
                                     case remainingEnigmas of
                                         first :: others ->
-                                            InProgress { tries = tries, current = first, remaining = others, fieldValue = "" }
+                                            InProgress { tries = tries, current = first, remaining = others, fieldValue = "", showAnswer = Nothing, giveUp = giveUp }
                                                 |> Decode.succeed
 
                                         [] ->
                                             Decode.fail "Invalid state"
                             )
+                            (Decode.field "giveUp" Decode.int)
                             (Decode.field "tries" Decode.int)
                             (Decode.field "remaining" Decode.int)
                             |> Decode.andThen identity
 
                     "done" ->
-                        Decode.map Done (Decode.field "tries" Decode.int)
+                        Decode.map3 Done
+                            (Decode.field "giveUp" Decode.int)
+                            (Decode.field "tries" Decode.int)
+                            (Decode.succeed Nothing)
 
                     stateValue ->
                         Decode.fail ("Unknown state value: " ++ stateValue)
