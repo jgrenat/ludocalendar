@@ -263,7 +263,7 @@ view zone currentDate state =
                 24
 
             else
-                Time.toDay zone currentDate + 2
+                Time.toDay zone currentDate
     in
     if maxDay < 4 then
         typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] "Ce jour n'est pas encore accessible, petit malin ! 😉🎁🎄"
