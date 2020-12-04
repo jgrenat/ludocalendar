@@ -277,8 +277,8 @@ view zone currentDate state =
                     div [ css [ textAlign center, marginTop Spacing.XL ] ]
                         [ viewMaybe viewQuestionResult (List.head previousResults)
                         , typography HeroText p [] ("Défi terminé ! Votre score : " ++ String.fromInt (getScore state))
-                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 3 ]
-                        , p [] [ twitterLink 3 ]
+                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 4 ]
+                        , p [] [ twitterLink 4 ]
                         ]
 
                 FirstQuestion model ->
@@ -378,7 +378,7 @@ viewClueNumberChoice =
         , ul [ class "clues-number-choice" ]
             [ li [] [ typography Paragraph button [ type_ "button", onClick (CluesNumberChosen One) ] "Un indice (3 points)" ]
             , li [] [ typography Paragraph button [ type_ "button", onClick (CluesNumberChosen Two) ] "Deux indices (2 points)" ]
-            , li [] [ typography Paragraph button [ type_ "button", onClick (CluesNumberChosen Three) ] "Trois indices (1 points)" ]
+            , li [] [ typography Paragraph button [ type_ "button", onClick (CluesNumberChosen Three) ] "Trois indices (1 point)" ]
             ]
         ]
 
@@ -411,10 +411,10 @@ viewForm remainingTries fieldValue =
         ]
         [ case remainingTries of
             ThreeTries ->
-                typography Paragraph p [] "3 essais restant"
+                typography Paragraph p [] "3 essais restants"
 
             TwoTries ->
-                typography Paragraph p [] "2 essais restant"
+                typography Paragraph p [] "2 essais restants"
 
             OneTry ->
                 typography Paragraph p [] "Dernier essai"
