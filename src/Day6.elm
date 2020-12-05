@@ -56,13 +56,13 @@ firstEnigma =
 
 otherEnigmas : List Enigma
 otherEnigmas =
-    [ { image = ImagePath.toString images.day6.day61Image
-      , answerImage = ImagePath.toString images.day6.day61Answer
-      , answers = Nonempty "Une étoile" [ "étoile", "l'étoile", "étoile de Noël", "une étoile de Noël" ]
+    [ { image = ImagePath.toString images.day6.day62Image
+      , answerImage = ImagePath.toString images.day6.day62Answer
+      , answers = Nonempty "Un serpent" [ "serpent", "le serpent", "serpent à sonnette", "un serpent à sonnette", "python", "un python" ]
       }
-    , { image = ImagePath.toString images.day6.day61Image
-      , answerImage = ImagePath.toString images.day6.day61Answer
-      , answers = Nonempty "La tarte Tatin" [ "tarte Tatin", "Tatin", "une tarte Tatin" ]
+    , { image = ImagePath.toString images.day6.day63Image
+      , answerImage = ImagePath.toString images.day6.day63Answer
+      , answers = Nonempty "Un barbecue" [ "barbecue", "bbq", "un bbq", "un grill", "grill" ]
       }
     ]
 
