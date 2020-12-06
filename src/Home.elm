@@ -9,6 +9,7 @@ import Day3
 import Day4
 import Day5
 import Day6
+import Day7
 import Html.Styled exposing (Html, a, div, text)
 import Html.Styled.Attributes exposing (class, href)
 import Model exposing (Model)
@@ -28,7 +29,7 @@ view model =
             , ( 4, Day4.isDone model.day4, pages.day4 )
             , ( 5, Day5.isDone model.day5, pages.day5 )
             , ( 6, Day6.isDone model.day6, pages.day6 )
-            , ( 7, False, pages.day2 )
+            , ( 7, Day7.isDone model.day7, pages.day7 )
             , ( 8, False, pages.day2 )
             , ( 9, False, pages.day2 )
             , ( 10, False, pages.day2 )
