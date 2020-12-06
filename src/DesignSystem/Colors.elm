@@ -1,4 +1,4 @@
-module DesignSystem.Colors exposing (..)
+module DesignSystem.Colors exposing (checkedRadioInputBackground, checkedRadioInputBorder, containerBackground, containerShadow, deactivatedButtonBackground, facebookBlue, fieldBackground, fieldBorder, fieldBorderError, fieldBorderHover, fieldError, fieldFocus, fieldInputText, fieldInputTextFocused, fieldInputTextHoverActive, fieldLabelText, green, horizontalSelectBackgroud, panelColor, panelLinkColor, primary, primaryButtonActiveBackground, primaryButtonBackground, primaryButtonBorder, primaryButtonHoverBackground, primaryButtonText, radioInputBackgroundColor, radioInputBorder, red, secondary, secondaryButtonActiveBackground, secondaryButtonBackground, secondaryButtonBorder, secondaryButtonHoverBackground, secondaryButtonHoverText, secondaryButtonText, typographyHigh, typographyMedium, white, yellow)
 
 import Css exposing (Color, ColorValue, NonMixable, hex, rgb, rgba, transparent)
 
@@ -6,6 +6,11 @@ import Css exposing (Color, ColorValue, NonMixable, hex, rgb, rgba, transparent)
 green : Color
 green =
     hex "#2ca58d"
+
+
+red : Color
+red =
+    hex "#f63333"
 
 
 yellow : Color
