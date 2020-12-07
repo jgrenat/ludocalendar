@@ -1,7 +1,8 @@
 module Day8 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (absolute, alignItems, alignSelf, backgroundColor, batch, bold, borderRadius, center, color, column, cursor, flexDirection, fontWeight, height, justifyContent, left, opacity, pct, pointer, position, relative, row, spaceBetween, textAlign, top, width)
+import Css exposing (absolute, alignItems, alignSelf, backgroundColor, batch, bold, borderRadius, center, color, column, cursor, flexDirection, fontWeight, height, justifyContent, left, opacity, pct, pointer, position, relative, right, row, spaceBetween, textAlign, top, width)
 import DesignSystem.Colors exposing (green, red, white)
+import DesignSystem.Link exposing (homeLink)
 import DesignSystem.SocialMedia exposing (facebookLink, twitterLink)
 import DesignSystem.Spacing as Spacing exposing (marginBottom, marginTop)
 import DesignSystem.Typography exposing (TypographyType(..), typography)
@@ -312,6 +313,8 @@ view zone now model =
                             , viewDrawedCard second
                             ]
                         ]
+            , typography Paragraph p [ css [ marginTop Spacing.L, fontWeight bold, textAlign center ] ] "Un énorme merci à Seb & Laure qui ont créé l'épreuve d'aujourd'hui ! 🎉"
+            , homeLink
             ]
 
 
