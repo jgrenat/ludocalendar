@@ -8,6 +8,7 @@ import Day5
 import Day6
 import Day7
 import Day8
+import Day9
 import Time exposing (Posix, Zone)
 
 
@@ -22,4 +23,5 @@ type alias Model =
     , day6 : Day6.Model
     , day7 : Day7.Model
     , day8 : Day8.Model
+    , day9 : Day9.Model
     }
