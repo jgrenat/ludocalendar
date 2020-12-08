@@ -1,6 +1,6 @@
 module Home exposing (view)
 
-import Css exposing (absolute, backgroundColor, center, color, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, none, pct, position, px, relative, rem, rgb, right, textDecoration, top, transforms, translateX, translateY, width, wrap)
+import Css exposing (absolute, backgroundColor, center, color, displayFlex, em, flexWrap, fontSize, height, justifyContent, left, margin, none, pct, position, px, relative, rem, rgb, right, textAlign, textDecoration, top, transforms, translateX, translateY, width, wrap)
 import Css.Global as Css exposing (Snippet)
 import Css.Media as Media
 import Day1
@@ -12,8 +12,10 @@ import Day6
 import Day7
 import Day8
 import Day9
-import Html.Styled exposing (Html, a, div, text)
-import Html.Styled.Attributes exposing (class, href)
+import DesignSystem.Spacing as Spacing exposing (marginTop, paddingLeft, paddingRight)
+import DesignSystem.Typography exposing (TypographyType(..), typography)
+import Html.Styled exposing (Html, a, aside, br, div, p, span, text)
+import Html.Styled.Attributes exposing (class, css, href)
 import Model exposing (Model)
 import Pages exposing (pages)
 import Pages.PagePath as PagePath exposing (PagePath)
@@ -59,11 +61,19 @@ view model =
                 Time.toDay model.zone model.currentDate
     in
     div [ class "days" ]
-        (Css.global styles
+        ((Css.global styles
             :: (days
                     |> List.filter (\( day, _, _ ) -> day <= maxDay)
                     |> List.map viewDay
                )
+         )
+            ++ [ aside [ css [ marginTop Spacing.XL, textAlign center, paddingLeft Spacing.XL, paddingRight Spacing.XL ] ]
+                    [ typography Paragraph p [] "LudoCalendar est l'initiative bénévole d'un passionné de jeux de société."
+                    , p [ css [ marginTop Spacing.M ] ]
+                        [ typography Paragraph a [ href "mailto:contact@ludocalendar.com" ] "Une idée, une envie, besoin d'aide ? Contactez-nous !"
+                        ]
+                    ]
+               ]
         )
 
 
