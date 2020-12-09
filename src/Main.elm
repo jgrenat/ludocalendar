@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Color
 import Day1
+import Day10
 import Day2
 import Day3
 import Day4
@@ -118,7 +119,7 @@ markdownDocument =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init Day3.init Day4.init Day5.init Day6.init Day7.init Day8.init Day9.init
+    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init Day3.init Day4.init Day5.init Day6.init Day7.init Day8.init Day9.init Day10.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -139,6 +140,7 @@ type Msg
     | Day7Msg Day7.Msg
     | Day8Msg Day8.Msg
     | Day9Msg Day9.Msg
+    | Day10Msg Day10.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -224,6 +226,13 @@ update msg model =
                     Day9.update model.day9 day9Msg
             in
             ( { model | day9 = newModel }, saveDay 9 Day9.saveState newModel )
+
+        Day10Msg day10Msg ->
+            let
+                newModel =
+                    Day10.update model.day10 day10Msg
+            in
+            ( { model | day10 = newModel }, saveDay 10 Day10.saveState newModel )
 
 
 subscriptions _ _ _ =
@@ -327,6 +336,14 @@ pageView model siteMetadata page viewForPage =
             , body =
                 [ Day9.view model.zone model.currentDate model.day9
                     |> Html.Styled.map Day9Msg
+                ]
+            }
+
+        Metadata.Day10 ->
+            { title = "LudoCalendar – Dixième jour"
+            , body =
+                [ Day10.view model.zone model.currentDate model.day10
+                    |> Html.Styled.map Day10Msg
                 ]
             }
 
@@ -511,6 +528,22 @@ head metadata =
                         , title = "Neuvième jour"
                         }
                         |> Seo.website
+
+                Metadata.Day10 ->
+                    Seo.summaryLarge
+                        { canonicalUrlOverride = Nothing
+                        , siteName = "LudoCalendar"
+                        , image =
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
+                            , dimensions = Nothing
+                            , mimeType = Nothing
+                            }
+                        , description = siteTagline
+                        , locale = Nothing
+                        , title = "Dixième jour"
+                        }
+                        |> Seo.website
            )
 
 
@@ -542,6 +575,7 @@ stateDecoder zone time =
         (Decode.oneOf [ Decode.field "day8" Day8.stateDecoder, Decode.succeed Day8.init ])
         |> Decode.andThen
             (\partialModel ->
-                Decode.map partialModel
+                Decode.map2 partialModel
                     (Decode.oneOf [ Decode.field "day9" Day9.stateDecoder, Decode.succeed Day9.init ])
+                    (Decode.oneOf [ Decode.field "day10" Day10.stateDecoder, Decode.succeed Day10.init ])
             )

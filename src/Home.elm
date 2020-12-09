@@ -14,7 +14,7 @@ import Day8
 import Day9
 import DesignSystem.Spacing as Spacing exposing (marginTop, paddingLeft, paddingRight)
 import DesignSystem.Typography exposing (TypographyType(..), typography)
-import Html.Styled exposing (Html, a, aside, br, div, p, span, text)
+import Html.Styled exposing (Html, a, aside, div, p, text)
 import Html.Styled.Attributes exposing (class, css, href)
 import Model exposing (Model)
 import Pages exposing (pages)

@@ -1,6 +1,7 @@
 module Model exposing (Model)
 
 import Day1
+import Day10
 import Day2
 import Day3
 import Day4
@@ -24,4 +25,5 @@ type alias Model =
     , day7 : Day7.Model
     , day8 : Day8.Model
     , day9 : Day9.Model
+    , day10 : Day10.Model
     }
