@@ -38,8 +38,8 @@ type alias Enigma =
 
 firstEnigma : Enigma
 firstEnigma =
-    { clue1 = Clue "Je l'inviterais volontiers au restaurant" 3 -- 3
-    , clue2 = Clue "Fréquente les salons de beauté" 5 -- 0
+    { clue1 = Clue "Je l'inviterais volontiers au restaurant" 3
+    , clue2 = Clue "Fréquente les salons de beauté" 0
     , possibleAnswers = [ "Le Père-Noël", "Un pirate", "Un étudiant en informatique", "Dracula", "Dark Vador" ]
     , answer = "Un étudiant en informatique"
     }
