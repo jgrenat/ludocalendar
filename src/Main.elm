@@ -3,6 +3,7 @@ module Main exposing (main)
 import Color
 import Day1
 import Day10
+import Day11
 import Day2
 import Day3
 import Day4
@@ -119,7 +120,7 @@ markdownDocument =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init Day3.init Day4.init Day5.init Day6.init Day7.init Day8.init Day9.init Day10.init
+    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init Day3.init Day4.init Day5.init Day6.init Day7.init Day8.init Day9.init Day10.init Day11.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -141,6 +142,7 @@ type Msg
     | Day8Msg Day8.Msg
     | Day9Msg Day9.Msg
     | Day10Msg Day10.Msg
+    | Day11Msg Day11.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -234,9 +236,26 @@ update msg model =
             in
             ( { model | day10 = newModel }, saveDay 10 Day10.saveState newModel )
 
+        Day11Msg day11Msg ->
+            let
+                newModel =
+                    Day11.update model.day11 day11Msg
+            in
+            ( { model | day11 = newModel }, saveDay 11 Day11.saveState newModel )
 
-subscriptions _ _ _ =
-    Sub.batch [ Time.every 1000 Tick, stateFromLocalStorage StateLoaded ]
+
+subscriptions metadata _ model =
+    let
+        daySubscriptions =
+            case metadata of
+                Metadata.Day11 ->
+                    Day11.subscriptions model.day11
+                        |> Sub.map Day11Msg
+
+                _ ->
+                    Sub.none
+    in
+    Sub.batch [ Time.every 1000 Tick, stateFromLocalStorage StateLoaded, daySubscriptions ]
 
 
 view :
@@ -344,6 +363,14 @@ pageView model siteMetadata page viewForPage =
             , body =
                 [ Day10.view model.zone model.currentDate model.day10
                     |> Html.Styled.map Day10Msg
+                ]
+            }
+
+        Metadata.Day11 ->
+            { title = "LudoCalendar – Onzième jour"
+            , body =
+                [ Day11.view model.zone model.currentDate model.day11
+                    |> Html.Styled.map Day11Msg
                 ]
             }
 
@@ -544,6 +571,22 @@ head metadata =
                         , title = "Dixième jour"
                         }
                         |> Seo.website
+
+                Metadata.Day11 ->
+                    Seo.summaryLarge
+                        { canonicalUrlOverride = Nothing
+                        , siteName = "LudoCalendar"
+                        , image =
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
+                            , dimensions = Nothing
+                            , mimeType = Nothing
+                            }
+                        , description = siteTagline
+                        , locale = Nothing
+                        , title = "Onzième jour"
+                        }
+                        |> Seo.website
            )
 
 
@@ -575,7 +618,8 @@ stateDecoder zone time =
         (Decode.oneOf [ Decode.field "day8" Day8.stateDecoder, Decode.succeed Day8.init ])
         |> Decode.andThen
             (\partialModel ->
-                Decode.map2 partialModel
+                Decode.map3 partialModel
                     (Decode.oneOf [ Decode.field "day9" Day9.stateDecoder, Decode.succeed Day9.init ])
                     (Decode.oneOf [ Decode.field "day10" Day10.stateDecoder, Decode.succeed Day10.init ])
+                    (Decode.oneOf [ Decode.field "day11" Day11.stateDecoder, Decode.succeed Day11.init ])
             )

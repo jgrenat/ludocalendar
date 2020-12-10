@@ -77,6 +77,7 @@ styles =
         , border3 (px 2) solid Colors.primary
         , backgroundColor Colors.primary
         , padding Spacing.XS
+        , cursor pointer
         , Css.focus
             [ outline none
             , borderColor (hex "226622")
