@@ -4,6 +4,7 @@ import Css exposing (absolute, backgroundColor, center, color, displayFlex, em, 
 import Css.Global as Css exposing (Snippet)
 import Css.Media as Media
 import Day1
+import Day10
 import Day2
 import Day3
 import Day4
@@ -36,7 +37,7 @@ view model =
             , ( 7, Day7.isDone model.day7, pages.day7 )
             , ( 8, Day8.isDone model.day8, pages.day8 )
             , ( 9, Day9.isDone model.day9, pages.day9 )
-            , ( 10, False, pages.day2 )
+            , ( 10, Day10.isDone model.day10, pages.day10 )
             , ( 11, False, pages.day2 )
             , ( 12, False, pages.day2 )
             , ( 13, False, pages.day2 )
