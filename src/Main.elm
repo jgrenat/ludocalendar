@@ -4,6 +4,7 @@ import Color
 import Day1
 import Day10
 import Day11
+import Day12
 import Day2
 import Day3
 import Day4
@@ -120,7 +121,20 @@ markdownDocument =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Time.utc (millisToPosix 0) Day1.init Day2.init Day3.init Day4.init Day5.init Day6.init Day7.init Day8.init Day9.init Day10.init Day11.init
+    ( Model Time.utc
+        (millisToPosix 0)
+        Day1.init
+        Day2.init
+        Day3.init
+        Day4.init
+        Day5.init
+        Day6.init
+        Day7.init
+        Day8.init
+        Day9.init
+        Day10.init
+        Day11.init
+        Day12.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -143,6 +157,7 @@ type Msg
     | Day9Msg Day9.Msg
     | Day10Msg Day10.Msg
     | Day11Msg Day11.Msg
+    | Day12Msg Day12.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -243,6 +258,13 @@ update msg model =
             in
             ( { model | day11 = newModel }, saveDay 11 Day11.saveState newModel )
 
+        Day12Msg day12Msg ->
+            let
+                newModel =
+                    Day12.update model.day12 day12Msg
+            in
+            ( { model | day12 = newModel }, saveDay 12 Day12.saveState newModel )
+
 
 subscriptions metadata _ model =
     let
@@ -251,6 +273,10 @@ subscriptions metadata _ model =
                 Metadata.Day11 ->
                     Day11.subscriptions model.day11
                         |> Sub.map Day11Msg
+
+                Metadata.Day12 ->
+                    Day12.subscriptions model.day12
+                        |> Sub.map Day12Msg
 
                 _ ->
                     Sub.none
@@ -371,6 +397,14 @@ pageView model siteMetadata page viewForPage =
             , body =
                 [ Day11.view model.zone model.currentDate model.day11
                     |> Html.Styled.map Day11Msg
+                ]
+            }
+
+        Metadata.Day12 ->
+            { title = "LudoCalendar – Douxième jour"
+            , body =
+                [ Day12.view model.zone model.currentDate model.day12
+                    |> Html.Styled.map Day12Msg
                 ]
             }
 
@@ -587,6 +621,22 @@ head metadata =
                         , title = "Onzième jour"
                         }
                         |> Seo.website
+
+                Metadata.Day12 ->
+                    Seo.summaryLarge
+                        { canonicalUrlOverride = Nothing
+                        , siteName = "LudoCalendar"
+                        , image =
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
+                            , dimensions = Nothing
+                            , mimeType = Nothing
+                            }
+                        , description = siteTagline
+                        , locale = Nothing
+                        , title = "Douxième jour"
+                        }
+                        |> Seo.website
            )
 
 
@@ -605,21 +655,23 @@ saveDay day encoder model =
     saveToLocalStorage (Ports.DayState day (encoder model))
 
 
+andWith : Decoder a -> Decoder (a -> b) -> Decoder b
+andWith =
+    Decode.map2 (|>)
+
+
 stateDecoder : Zone -> Posix -> Decoder Model
 stateDecoder zone time =
-    Decode.map8 (Model zone time)
-        (Decode.oneOf [ Decode.field "day1" Day1.stateDecoder, Decode.succeed Day1.init ])
-        (Decode.oneOf [ Decode.field "day2" Day2.stateDecoder, Decode.succeed Day2.init ])
-        (Decode.oneOf [ Decode.field "day3" Day3.stateDecoder, Decode.succeed Day3.init ])
-        (Decode.oneOf [ Decode.field "day4" Day4.stateDecoder, Decode.succeed Day4.init ])
-        (Decode.oneOf [ Decode.field "day5" Day5.stateDecoder, Decode.succeed Day5.init ])
-        (Decode.oneOf [ Decode.field "day6" Day6.stateDecoder, Decode.succeed Day6.init ])
-        (Decode.oneOf [ Decode.field "day7" Day7.stateDecoder, Decode.succeed Day7.init ])
-        (Decode.oneOf [ Decode.field "day8" Day8.stateDecoder, Decode.succeed Day8.init ])
-        |> Decode.andThen
-            (\partialModel ->
-                Decode.map3 partialModel
-                    (Decode.oneOf [ Decode.field "day9" Day9.stateDecoder, Decode.succeed Day9.init ])
-                    (Decode.oneOf [ Decode.field "day10" Day10.stateDecoder, Decode.succeed Day10.init ])
-                    (Decode.oneOf [ Decode.field "day11" Day11.stateDecoder, Decode.succeed Day11.init ])
-            )
+    Decode.succeed (Model zone time)
+        |> andWith (Decode.oneOf [ Decode.field "day1" Day1.stateDecoder, Decode.succeed Day1.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day2" Day2.stateDecoder, Decode.succeed Day2.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day3" Day3.stateDecoder, Decode.succeed Day3.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day4" Day4.stateDecoder, Decode.succeed Day4.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day5" Day5.stateDecoder, Decode.succeed Day5.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day6" Day6.stateDecoder, Decode.succeed Day6.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day7" Day7.stateDecoder, Decode.succeed Day7.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day8" Day8.stateDecoder, Decode.succeed Day8.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day9" Day9.stateDecoder, Decode.succeed Day9.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day10" Day10.stateDecoder, Decode.succeed Day10.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day11" Day11.stateDecoder, Decode.succeed Day11.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day12" Day12.stateDecoder, Decode.succeed Day12.init ])

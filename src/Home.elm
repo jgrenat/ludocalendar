@@ -6,6 +6,7 @@ import Css.Media as Media
 import Day1
 import Day10
 import Day11
+import Day12
 import Day2
 import Day3
 import Day4
@@ -40,7 +41,7 @@ view model =
             , ( 9, Day9.isDone model.day9, pages.day9 )
             , ( 10, Day10.isDone model.day10, pages.day10 )
             , ( 11, Day11.isDone model.day11, pages.day11 )
-            , ( 12, False, pages.day2 )
+            , ( 12, Day12.isDone model.day12, pages.day12 )
             , ( 13, False, pages.day2 )
             , ( 14, False, pages.day2 )
             , ( 15, False, pages.day2 )
