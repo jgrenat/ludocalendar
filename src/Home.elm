@@ -71,7 +71,7 @@ view model =
                )
          )
             ++ [ aside [ css [ marginTop Spacing.XL, textAlign center, paddingLeft Spacing.XL, paddingRight Spacing.XL ] ]
-                    [ typography Paragraph p [] "LudoCalendar est l'initiative bénévole d'un passionné de jeux de société."
+                    [ typography Paragraph p [] "LudoCalendar est l'initiative de bénévoles passionnés de jeux de société."
                     , p [ css [ marginTop Spacing.M ] ]
                         [ typography Paragraph a [ href "mailto:contact@ludocalendar.com" ] "Une idée, une envie, besoin d'aide ? Contactez-nous !"
                         ]

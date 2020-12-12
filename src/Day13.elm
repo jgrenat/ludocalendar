@@ -121,7 +121,7 @@ view zone currentDate state =
                 24
 
             else
-                Time.toDay zone currentDate
+                Time.toDay zone currentDate + 1
     in
     if maxDay < 13 then
         typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] "Ce jour n'est pas encore accessible, petit malin ! 😉🎁🎄"
@@ -192,7 +192,7 @@ viewGame state =
             NotEnded game ->
                 div [ css [ displayFlex, flexDirection column, alignItems center, Spacing.marginTop Spacing.S ] ]
                     [ form [ onSubmit Validated, css [ textAlign center, Spacing.marginTop Spacing.S ] ]
-                        [ input [ type_ "text", value game.input, onInput UpdatedInput, placeholder "Entrer un mot!" ] []
+                        [ input [ type_ "text", value game.input, onInput UpdatedInput, placeholder "Entrez un mot !" ] []
                         , button [ type_ "submit" ] [ text "Valider" ]
                         ]
                     , div [ css [ fontWeight (int 600), color Colors.secondary, DesignSystem.Typography.fontSize DesignSystem.Typography.L ] ]
