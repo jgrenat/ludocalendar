@@ -167,11 +167,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick posix ->
-            ( { model
-                | currentDate = posix
-                , day13 = Day13.tick posix model.day13
-              }
-            , Cmd.none
+            let
+                newDay13Model =
+                    Day13.tick posix model.day13
+            in
+            ( { model | currentDate = posix, day13 = newDay13Model }
+            , saveDay 13 Day13.saveState newDay13Model
             )
 
         ZoneRetrieved zone ->
