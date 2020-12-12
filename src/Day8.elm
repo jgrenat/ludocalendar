@@ -279,8 +279,8 @@ view zone now model =
                                             "en commettant " ++ String.fromInt n ++ " erreurs !"
                                    )
                             )
-                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 6 ]
-                        , p [] [ twitterLink 6 ]
+                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 8 ]
+                        , p [] [ twitterLink 8 ]
                         ]
 
                 ShowInstructionsOnly ->

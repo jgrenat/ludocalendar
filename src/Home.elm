@@ -7,6 +7,7 @@ import Day1
 import Day10
 import Day11
 import Day12
+import Day13
 import Day2
 import Day3
 import Day4
@@ -42,7 +43,7 @@ view model =
             , ( 10, Day10.isDone model.day10, pages.day10 )
             , ( 11, Day11.isDone model.day11, pages.day11 )
             , ( 12, Day12.isDone model.day12, pages.day12 )
-            , ( 13, False, pages.day2 )
+            , ( 13, Day13.isDone model.day13, pages.day13 )
             , ( 14, False, pages.day2 )
             , ( 15, False, pages.day2 )
             , ( 16, False, pages.day2 )
@@ -71,7 +72,7 @@ view model =
                )
          )
             ++ [ aside [ css [ marginTop Spacing.XL, textAlign center, paddingLeft Spacing.XL, paddingRight Spacing.XL ] ]
-                    [ typography Paragraph p [] "LudoCalendar est l'initiative bénévole d'un passionné de jeux de société."
+                    [ typography Paragraph p [] "LudoCalendar est l'initiative de bénévoles passionnés de jeux de société."
                     , p [ css [ marginTop Spacing.M ] ]
                         [ typography Paragraph a [ href "mailto:contact@ludocalendar.com" ] "Une idée, une envie, besoin d'aide ? Contactez-nous !"
                         ]

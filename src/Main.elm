@@ -5,6 +5,7 @@ import Day1
 import Day10
 import Day11
 import Day12
+import Day13
 import Day2
 import Day3
 import Day4
@@ -135,6 +136,7 @@ init =
         Day10.init
         Day11.init
         Day12.init
+        Day13.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -158,13 +160,20 @@ type Msg
     | Day10Msg Day10.Msg
     | Day11Msg Day11.Msg
     | Day12Msg Day12.Msg
+    | Day13Msg Day13.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick posix ->
-            ( { model | currentDate = posix }, Cmd.none )
+            let
+                newDay13Model =
+                    Day13.tick posix model.day13
+            in
+            ( { model | currentDate = posix, day13 = newDay13Model }
+            , saveDay 13 Day13.saveState newDay13Model
+            )
 
         ZoneRetrieved zone ->
             ( { model | zone = zone }, Cmd.none )
@@ -264,6 +273,13 @@ update msg model =
                     Day12.update model.day12 day12Msg
             in
             ( { model | day12 = newModel }, saveDay 12 Day12.saveState newModel )
+
+        Day13Msg day13Msg ->
+            let
+                newModel =
+                    Day13.update model.currentDate model.day13 day13Msg
+            in
+            ( { model | day13 = newModel }, saveDay 13 Day13.saveState newModel )
 
 
 subscriptions metadata _ model =
@@ -405,6 +421,14 @@ pageView model siteMetadata page viewForPage =
             , body =
                 [ Day12.view model.zone model.currentDate model.day12
                     |> Html.Styled.map Day12Msg
+                ]
+            }
+
+        Metadata.Day13 ->
+            { title = "LudoCalendar – Douxième jour"
+            , body =
+                [ Day13.view model.zone model.currentDate model.day13
+                    |> Html.Styled.map Day13Msg
                 ]
             }
 
@@ -637,6 +661,22 @@ head metadata =
                         , title = "Douxième jour"
                         }
                         |> Seo.website
+
+                Metadata.Day13 ->
+                    Seo.summaryLarge
+                        { canonicalUrlOverride = Nothing
+                        , siteName = "LudoCalendar"
+                        , image =
+                            { url = images.screenshot
+                            , alt = "LudoCalendar"
+                            , dimensions = Nothing
+                            , mimeType = Nothing
+                            }
+                        , description = siteTagline
+                        , locale = Nothing
+                        , title = "Treizième jour"
+                        }
+                        |> Seo.website
            )
 
 
@@ -675,3 +715,4 @@ stateDecoder zone time =
         |> andWith (Decode.oneOf [ Decode.field "day10" Day10.stateDecoder, Decode.succeed Day10.init ])
         |> andWith (Decode.oneOf [ Decode.field "day11" Day11.stateDecoder, Decode.succeed Day11.init ])
         |> andWith (Decode.oneOf [ Decode.field "day12" Day12.stateDecoder, Decode.succeed Day12.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day13" Day13.stateDecoder, Decode.succeed Day13.init ])

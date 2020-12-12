@@ -422,8 +422,8 @@ view zone currentDate state =
                 Done data ->
                     div [ css [ textAlign center, marginTop Spacing.XL ] ]
                         [ typography HeroText p [ css [ marginTop Spacing.M ] ] ("Bravo ! Vous avez trouvé toutes les paires en ne vous trompant que " ++ String.fromInt data.fails ++ " fois !")
-                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 11 ]
-                        , p [] [ twitterLink 11 ]
+                        , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 12 ]
+                        , p [] [ twitterLink 12 ]
                         ]
             , typography Paragraph p [ css [ marginTop Spacing.L, fontWeight bold, textAlign center ] ] "Encore une fois, un énorme merci à Seb & Laure qui ont créé également l'épreuve d'aujourd'hui ! 🎉"
             , homeLink
