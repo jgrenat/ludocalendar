@@ -1,6 +1,6 @@
 module DesignSystem.Global exposing (styles)
 
-import Css exposing (auto, backgroundAttachment, backgroundColor, backgroundImage, backgroundSize, block, border3, borderColor, borderRadius, borderStyle, boxShadow5, center, color, cover, cursor, dashed, display, fixed, fontStyle, fontWeight, height, hex, int, italic, margin, maxWidth, minHeight, none, outline, pct, pointer, px, rgb, solid, textAlign, textDecoration, transparent, underline, url, width, zero)
+import Css exposing (auto, backgroundAttachment, backgroundColor, backgroundImage, backgroundSize, block, border3, borderColor, borderRadius, borderStyle, boxShadow5, center, color, cover, cursor, dashed, default, display, fixed, fontStyle, fontWeight, height, hex, int, italic, margin, maxWidth, minHeight, none, outline, pct, pointer, px, rgb, solid, textAlign, textDecoration, transparent, underline, url, width, zero)
 import Css.Global as Global exposing (Snippet)
 import Css.Media as Media
 import DesignSystem.Colors as Colors
@@ -78,6 +78,7 @@ styles =
         , backgroundColor Colors.primary
         , padding Spacing.XS
         , cursor pointer
+        , Css.disabled [ cursor default ]
         , Css.focus
             [ outline none
             , borderColor (hex "226622")

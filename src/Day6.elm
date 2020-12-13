@@ -244,7 +244,7 @@ view zone currentDate state =
     else
         div [ class "day4" ]
             [ Css.global styles
-            , typography Title1 h1 [ css [ marginTop Spacing.L, marginBottom Spacing.M, textAlign center ] ] "Jour 4 | iKnow"
+            , typography Title1 h1 [ css [ marginTop Spacing.L, marginBottom Spacing.M, textAlign center ] ] "Jour 6 | What's missing"
             , case state of
                 Done previousResults ->
                     div [ css [ textAlign center, marginTop Spacing.XL ] ]
