@@ -446,7 +446,7 @@ isDone model =
             True
 
         InProgress _ ->
-            True
+            False
 
 
 saveState : Model -> Encode.Value
