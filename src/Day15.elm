@@ -1,6 +1,6 @@
 module Day15 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (auto, backgroundColor, block, borderWidth, center, color, display, height, margin, maxHeight, maxWidth, pct, px, rgb, right, textAlign, transparent, vh, zero)
+import Css exposing (auto, backgroundColor, block, bold, borderWidth, center, color, display, fontWeight, height, margin, maxHeight, maxWidth, pct, px, rgb, right, textAlign, transparent, vh, zero)
 import Css.Global as Css exposing (Snippet)
 import DesignSystem.Link exposing (homeLink)
 import DesignSystem.SocialMedia exposing (facebookLink, twitterLink)
@@ -185,6 +185,7 @@ view zone currentDate state =
                         , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 15 ]
                         , p [] [ twitterLink 15 ]
                         ]
+            , typography Paragraph p [ css [ marginTop Spacing.L, fontWeight bold, textAlign center ] ] "Un énorme merci à Patrick qui a réalisé et pris en photo les énigmes d'aujourd'hui ! 🎉"
             , homeLink
             ]
 
