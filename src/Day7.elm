@@ -1,6 +1,6 @@
 module Day7 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (absolute, alignItems, backgroundColor, block, border, center, cursor, display, displayFlex, flexWrap, int, justifyContent, left, maxHeight, maxWidth, notAllowed, pct, pointer, position, px, relative, rgba, right, spaceAround, textAlign, top, transparent, width, wrap, zIndex, zero)
+import Css exposing (absolute, alignItems, backgroundColor, block, bold, border, center, cursor, display, displayFlex, flexWrap, fontWeight, int, justifyContent, left, maxHeight, maxWidth, notAllowed, pct, pointer, position, px, relative, rgba, right, spaceAround, textAlign, top, transparent, width, wrap, zIndex, zero)
 import Css.Global as Css exposing (Snippet)
 import DesignSystem.Link exposing (homeLink)
 import DesignSystem.SocialMedia exposing (facebookLink, twitterLink)
@@ -214,6 +214,7 @@ view zone currentDate state =
                         , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 7 ]
                         , p [] [ twitterLink 7 ]
                         ]
+            , typography Paragraph p [ css [ marginTop Spacing.L, fontWeight bold, textAlign center ] ] "Un énorme merci à Zoé qui a fourni les photos d'aujourd'hui ! 🎉"
             , homeLink
             ]
 
