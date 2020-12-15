@@ -20,6 +20,7 @@ type Metadata
     | Day13
     | Day14
     | Day15
+    | Day16
 
 
 decoder : Decoder Metadata
@@ -75,6 +76,9 @@ decoder =
 
                     "day15" ->
                         Decode.succeed Day15
+
+                    "day16" ->
+                        Decode.succeed Day16
 
                     _ ->
                         Decode.fail ("Unexpected page type " ++ pageType)
