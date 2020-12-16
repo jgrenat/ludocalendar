@@ -87,7 +87,7 @@ otherEnigmas =
       , firstClue = "Il est l'objet d'un des contes d'Andersen."
       , secondClue = "D'après une chanson populaire, il est le roi des forêts."
       , thirdClue = "Il est indissociable de Noël."
-      , answers = Nonempty "Saping" [ "le sapin", "un sapin", "sapins", "des sapins", "les sapins" ]
+      , answers = Nonempty "Sapin" [ "le sapin", "un sapin", "sapins", "des sapins", "les sapins" ]
       }
     , { question = "Quel site web ?"
       , firstClue = "Il est l'activité la plus agréable du mois de décembre."
