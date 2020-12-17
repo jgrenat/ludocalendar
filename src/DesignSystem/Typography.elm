@@ -17,6 +17,7 @@ type TypographyType
     | MainTitleFirstPart
     | MainTitleSecondPart
     | HeroText
+    | WrongAnswer
 
 
 type FontSize
@@ -101,6 +102,9 @@ getClassName typographyType =
         Instructions ->
             "quizBestResultText"
 
+        WrongAnswer ->
+            "wrongAnswers"
+
 
 getStylesFor : TypographyType -> List Style
 getStylesFor typographyType =
@@ -140,6 +144,12 @@ getStylesFor typographyType =
         Instructions ->
             [ fontStyle italic
             , fontSize M
+            ]
+
+        WrongAnswer ->
+            [ color Colors.secondary
+            , fontSize M
+            , fontWeight bold
             ]
 
 
