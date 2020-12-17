@@ -38,9 +38,7 @@ checkScore firstGroup secondGroup =
 checkGroupScore : List Die -> Int
 checkGroupScore group =
     List.foldl applyEffects group group
-        |> Debug.log "score"
         |> List.map diceScore
-        |> Debug.log "score"
         |> List.foldl (+) 0
 
 
