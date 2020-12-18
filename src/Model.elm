@@ -10,6 +10,7 @@ import Day15
 import Day16
 import Day17
 import Day18
+import Day19
 import Day2
 import Day3
 import Day4
@@ -42,4 +43,5 @@ type alias Model =
     , day16 : Day16.Model
     , day17 : Day17.Model
     , day18 : Day18.Model
+    , day19 : Day19.Model
     }

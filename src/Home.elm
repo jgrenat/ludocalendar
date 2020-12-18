@@ -13,6 +13,7 @@ import Day15
 import Day16
 import Day17
 import Day18
+import Day19
 import Day2
 import Day3
 import Day4
@@ -54,7 +55,7 @@ view model =
             , ( 16, Day16.isDone model.day16, pages.day16 )
             , ( 17, Day17.isDone model.day17, pages.day17 )
             , ( 18, Day18.isDone model.day18, pages.day18 )
-            , ( 19, False, pages.day2 )
+            , ( 19, Day19.isDone model.day19, pages.day19 )
             , ( 20, False, pages.day2 )
             , ( 21, False, pages.day2 )
             , ( 22, False, pages.day2 )
