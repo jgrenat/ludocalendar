@@ -13,6 +13,7 @@ import Day17
 import Day18
 import Day19
 import Day2
+import Day20
 import Day3
 import Day4
 import Day5
@@ -149,6 +150,7 @@ init =
         Day17.init
         Day18.init
         Day19.init
+        Day20.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -179,6 +181,7 @@ type Msg
     | Day17Msg Day17.Msg
     | Day18Msg Day18.Msg
     | Day19Msg Day19.Msg
+    | Day20Msg Day20.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -340,6 +343,13 @@ update msg model =
                     Day19.update model.day19 day19Msg
             in
             ( { model | day19 = newModel }, saveDay 19 Day19.saveState newModel )
+
+        Day20Msg day20Msg ->
+            let
+                newModel =
+                    Day20.update model.day20 day20Msg
+            in
+            ( { model | day20 = newModel }, saveDay 20 Day20.saveState newModel )
 
 
 subscriptions metadata _ model =
@@ -540,6 +550,14 @@ pageView model siteMetadata page viewForPage =
                 ]
             }
 
+        Metadata.Day20 ->
+            { title = "LudoCalendar – Vingtième jour"
+            , body =
+                [ Day20.view model.zone model.currentDate model.day20
+                    |> Html.Styled.map Day20Msg
+                ]
+            }
+
 
 commonHeadTags : List (Head.Tag Pages.PathKey)
 commonHeadTags =
@@ -560,327 +578,87 @@ commonHeadTags =
 
 head : Metadata -> List (Head.Tag Pages.PathKey)
 head metadata =
-    commonHeadTags
-        ++ (case metadata of
+    let
+        title =
+            case metadata of
                 Metadata.Home ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Accueil"
-                        }
-                        |> Seo.website
+                    "Accueil"
 
                 Metadata.Day1 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Premier jour"
-                        }
-                        |> Seo.website
+                    "Premier jour"
 
                 Metadata.Day2 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Deuxième jour"
-                        }
-                        |> Seo.website
+                    "Deuxième jour"
 
                 Metadata.Day3 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Troisième jour"
-                        }
-                        |> Seo.website
+                    "Troisième jour"
 
                 Metadata.Day4 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Quatrième jour"
-                        }
-                        |> Seo.website
+                    "Quatrième jour"
 
                 Metadata.Day5 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Cinquième jour"
-                        }
-                        |> Seo.website
+                    "Cinquième jour"
 
                 Metadata.Day6 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Sixième jour"
-                        }
-                        |> Seo.website
+                    "Sixième jour"
 
                 Metadata.Day7 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Septième jour"
-                        }
-                        |> Seo.website
+                    "Septième jour"
 
                 Metadata.Day8 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Huitième jour"
-                        }
-                        |> Seo.website
+                    "Huitième jour"
 
                 Metadata.Day9 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Neuvième jour"
-                        }
-                        |> Seo.website
+                    "Neuvième jour"
 
                 Metadata.Day10 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Dixième jour"
-                        }
-                        |> Seo.website
+                    "Dixième jour"
 
                 Metadata.Day11 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Onzième jour"
-                        }
-                        |> Seo.website
+                    "Onzième jour"
 
                 Metadata.Day12 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Douxième jour"
-                        }
-                        |> Seo.website
+                    "Douxième jour"
 
                 Metadata.Day13 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Treizième jour"
-                        }
-                        |> Seo.website
+                    "Treizième jour"
 
                 Metadata.Day14 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Quatorzième jour"
-                        }
-                        |> Seo.website
+                    "Quatorzième jour"
 
                 Metadata.Day15 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Quinzième jour"
-                        }
-                        |> Seo.website
+                    "Quinzième jour"
 
                 Metadata.Day16 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Seizième jour"
-                        }
-                        |> Seo.website
+                    "Seizième jour"
 
                 Metadata.Day17 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Dix-septième jour"
-                        }
-                        |> Seo.website
+                    "Dix-septième jour"
 
                 Metadata.Day18 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Dix-huitième jour"
-                        }
-                        |> Seo.website
+                    "Dix-huitième jour"
 
                 Metadata.Day19 ->
-                    Seo.summaryLarge
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "LudoCalendar"
-                        , image =
-                            { url = images.screenshot
-                            , alt = "LudoCalendar"
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = siteTagline
-                        , locale = Nothing
-                        , title = "Dix-neuvième jour"
-                        }
-                        |> Seo.website
+                    "Dix-neuvième jour"
+
+                Metadata.Day20 ->
+                    "Vingtième jour"
+    in
+    commonHeadTags
+        ++ (Seo.summaryLarge
+                { canonicalUrlOverride = Nothing
+                , siteName = "LudoCalendar"
+                , image =
+                    { url = images.screenshot
+                    , alt = "LudoCalendar"
+                    , dimensions = Nothing
+                    , mimeType = Nothing
+                    }
+                , description = siteTagline
+                , locale = Nothing
+                , title = title
+                }
+                |> Seo.website
            )
 
 
@@ -926,3 +704,4 @@ stateDecoder zone time =
         |> andWith (Decode.oneOf [ Decode.field "day17" Day17.stateDecoder, Decode.succeed Day17.init ])
         |> andWith (Decode.oneOf [ Decode.field "day18" Day18.stateDecoder, Decode.succeed Day18.init ])
         |> andWith (Decode.oneOf [ Decode.field "day19" Day19.stateDecoder, Decode.succeed Day19.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day20" Day20.stateDecoder, Decode.succeed Day20.init ])
