@@ -1,6 +1,6 @@
 module Day21 exposing (Model, Msg, init, isDone, saveState, stateDecoder, update, view)
 
-import Css exposing (backgroundColor, borderColor, borderWidth, center, color, displayFlex, flexWrap, height, justifyContent, maxWidth, pct, px, rgb, right, textAlign, transparent, width, wrap, zero)
+import Css exposing (backgroundColor, bold, borderColor, borderWidth, center, color, displayFlex, flexWrap, fontWeight, height, justifyContent, maxWidth, pct, px, rgb, right, textAlign, transparent, width, wrap, zero)
 import Css.Global as Css exposing (Snippet)
 import DesignSystem.Colors as Colors
 import DesignSystem.Link exposing (homeLink)
@@ -165,7 +165,7 @@ view zone currentDate state =
                 24
 
             else
-                Time.toDay zone currentDate
+                Time.toDay zone currentDate + 1
     in
     if maxDay < 21 then
         typography HeroText p [ css [ textAlign center, marginTop Spacing.XL ] ] "Ce jour n'est pas encore accessible, petit malin ! 😉🎁🎄"
@@ -242,6 +242,7 @@ view zone currentDate state =
                         , p [ css [ marginTop Spacing.L, marginBottom Spacing.S ] ] [ facebookLink 21 ]
                         , p [] [ twitterLink 21 ]
                         ]
+            , typography Paragraph p [ css [ marginTop Spacing.L, fontWeight bold, textAlign center ] ] "Un énorme merci à Laure qui a fourni les images d'aujourd'hui ! 🎉"
             , homeLink
             ]
 
