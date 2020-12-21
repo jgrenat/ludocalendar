@@ -15,6 +15,7 @@ import Day19
 import Day2
 import Day20
 import Day21
+import Day22
 import Day3
 import Day4
 import Day5
@@ -153,6 +154,7 @@ init =
         Day19.init
         Day20.init
         Day21.init
+        Day22.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -185,6 +187,7 @@ type Msg
     | Day19Msg Day19.Msg
     | Day20Msg Day20.Msg
     | Day21Msg Day21.Msg
+    | Day22Msg Day22.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -361,6 +364,13 @@ update msg model =
             in
             ( { model | day21 = newModel }, saveDay 21 Day21.saveState newModel )
 
+        Day22Msg day22Msg ->
+            let
+                newModel =
+                    Day22.update day22Msg model.day22
+            in
+            ( { model | day22 = newModel }, saveDay 22 Day22.saveState newModel )
+
 
 subscriptions metadata _ model =
     let
@@ -373,6 +383,10 @@ subscriptions metadata _ model =
                 Metadata.Day12 ->
                     Day12.subscriptions model.day12
                         |> Sub.map Day12Msg
+
+                Metadata.Day22 ->
+                    Day22.subscriptions model.day22
+                        |> Sub.map Day22Msg
 
                 _ ->
                     Sub.none
@@ -569,10 +583,18 @@ pageView model siteMetadata page viewForPage =
             }
 
         Metadata.Day21 ->
-            { title = "LudoCalendar – Vingtième-et-unième jour"
+            { title = "LudoCalendar – Vingt-et-unième jour"
             , body =
                 [ Day21.view model.zone model.currentDate model.day21
                     |> Html.Styled.map Day21Msg
+                ]
+            }
+
+        Metadata.Day22 ->
+            { title = "LudoCalendar – Vingt-deuxième jour"
+            , body =
+                [ Day22.view model.zone model.currentDate model.day22
+                    |> Html.Styled.map Day22Msg
                 ]
             }
 
@@ -664,6 +686,9 @@ head metadata =
 
                 Metadata.Day21 ->
                     "Vingt-et-unième jour"
+
+                Metadata.Day22 ->
+                    "Vingt-deuxième jour"
     in
     commonHeadTags
         ++ (Seo.summaryLarge
@@ -727,3 +752,4 @@ stateDecoder zone time =
         |> andWith (Decode.oneOf [ Decode.field "day19" Day19.stateDecoder, Decode.succeed Day19.init ])
         |> andWith (Decode.oneOf [ Decode.field "day20" Day20.stateDecoder, Decode.succeed Day20.init ])
         |> andWith (Decode.oneOf [ Decode.field "day21" Day21.stateDecoder, Decode.succeed Day21.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day22" Day22.stateDecoder, Decode.succeed Day22.init ])
