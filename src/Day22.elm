@@ -138,8 +138,8 @@ viewCard picking card =
     div
         [ css
             [ Css.borderRadius (Css.px 10)
-            , Css.width (Css.px 150)
-            , Css.height (Css.px 250)
+            , Css.width (Css.px 100)
+            , Css.height (Css.px 167)
             , Css.padding (Css.px 20)
             , Css.margin (Css.px 12)
             , displayFlex
@@ -673,7 +673,11 @@ updateGame msg game =
                     if game.validTriples + game.mistakes < 10 then
                         let
                             ( newCards, newDeck ) =
-                                List.Extra.splitAt 3 game.deck
+                                if List.length game.board >= 15 then
+                                    ( [], game.deck )
+
+                                else
+                                    List.Extra.splitAt 3 game.deck
                         in
                         InProgress
                             { newGame
