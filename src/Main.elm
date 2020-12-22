@@ -16,6 +16,7 @@ import Day2
 import Day20
 import Day21
 import Day22
+import Day23
 import Day3
 import Day4
 import Day5
@@ -155,6 +156,7 @@ init =
         Day20.init
         Day21.init
         Day22.init
+        Day23.init
     , Cmd.batch
         [ Task.perform ZoneRetrieved Time.here
         , Task.perform Tick Time.now
@@ -188,6 +190,7 @@ type Msg
     | Day20Msg Day20.Msg
     | Day21Msg Day21.Msg
     | Day22Msg Day22.Msg
+    | Day23Msg Day23.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -370,6 +373,13 @@ update msg model =
                     Day22.update day22Msg model.day22
             in
             ( { model | day22 = newModel }, saveDay 22 Day22.saveState newModel )
+
+        Day23Msg day23Msg ->
+            let
+                newModel =
+                    Day23.update model.day23 day23Msg
+            in
+            ( { model | day23 = newModel }, saveDay 23 Day23.saveState newModel )
 
 
 subscriptions metadata _ model =
@@ -598,6 +608,14 @@ pageView model siteMetadata page viewForPage =
                 ]
             }
 
+        Metadata.Day23 ->
+            { title = "LudoCalendar – Vingt-troisième jour"
+            , body =
+                [ Day23.view model.zone model.currentDate model.day23
+                    |> Html.Styled.map Day23Msg
+                ]
+            }
+
 
 commonHeadTags : List (Head.Tag Pages.PathKey)
 commonHeadTags =
@@ -689,6 +707,9 @@ head metadata =
 
                 Metadata.Day22 ->
                     "Vingt-deuxième jour"
+
+                Metadata.Day23 ->
+                    "Vingt-troisième jour"
     in
     commonHeadTags
         ++ (Seo.summaryLarge
@@ -753,3 +774,4 @@ stateDecoder zone time =
         |> andWith (Decode.oneOf [ Decode.field "day20" Day20.stateDecoder, Decode.succeed Day20.init ])
         |> andWith (Decode.oneOf [ Decode.field "day21" Day21.stateDecoder, Decode.succeed Day21.init ])
         |> andWith (Decode.oneOf [ Decode.field "day22" Day22.stateDecoder, Decode.succeed Day22.init ])
+        |> andWith (Decode.oneOf [ Decode.field "day23" Day23.stateDecoder, Decode.succeed Day23.init ])
