@@ -1,0 +1,9 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>elm-pages Blog</title>
+<description>Le calendrier de l'Avent de vos jeux de société !</description>
+<link>https://elm-pages.com/blog</link>
+<lastBuildDate>Wed, 23 Dec 2020 20:22:05 +0000</lastBuildDate>
+<generator>elm-pages</generator>
+</channel>
+</rss>
