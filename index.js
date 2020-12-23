@@ -10,6 +10,11 @@ pagesInit({
   elmModule.ports.saveToLocalStorage.subscribe(({day, model}) => {
     localStorage.setItem("day" + day.toString(), JSON.stringify(model));
   });
+  elmModule.ports.initComments.subscribe(() => {
+    setTimeout(() => {
+      window.commentBox('5701926784073728-proj');
+    });
+  });
   elmModule.ports.stateFromLocalStorage.send({
     day1: JSON.parse(localStorage.getItem("day1")),
     day2: JSON.parse(localStorage.getItem("day2")),
@@ -47,4 +52,17 @@ scriptTag.src = 'https://plausible.io/js/plausible.js';
 scriptTag.defer = true;
 scriptTag['data-domain'] = 'ludocalendar.com';
 window.document.body.appendChild(scriptTag);
+
+
+// Add Plausible
+const commentBoxScriptTag = document.createElement('script');
+commentBoxScriptTag.type = 'text/javascript';
+commentBoxScriptTag.async = true;
+commentBoxScriptTag.src = 'https://unpkg.com/commentbox.io/dist/commentBox.min.js';
+commentBoxScriptTag.defer = true;
+commentBoxScriptTag.onload = () => window.commentBox('5701926784073728-proj');
+window.document.body.appendChild(commentBoxScriptTag);
+
+
+
 

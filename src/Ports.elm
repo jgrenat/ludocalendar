@@ -1,4 +1,4 @@
-port module Ports exposing (DayState, saveToLocalStorage, stateFromLocalStorage)
+port module Ports exposing (DayState, initComments, saveToLocalStorage, stateFromLocalStorage)
 
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -12,3 +12,6 @@ port saveToLocalStorage : DayState -> Cmd msg
 
 
 port stateFromLocalStorage : (Decode.Value -> msg) -> Sub msg
+
+
+port initComments : () -> Cmd msg
